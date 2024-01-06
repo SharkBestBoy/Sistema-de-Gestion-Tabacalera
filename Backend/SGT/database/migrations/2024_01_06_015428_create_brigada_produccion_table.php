@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vitolas', function (Blueprint $table) {
+        Schema::create('brigada_produccion', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->string('categoria');
+            $table->integer('idBrigada');
+            $table->foreignId('idBrigada')->references('id')->on('brigadas');
+            $table->integer('idProduccion');
+            $table->foreignId('idProduccion')->references('id')->on('produccions');
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vitolas');
+        Schema::dropIfExists('brigada_produccion');
     }
 };

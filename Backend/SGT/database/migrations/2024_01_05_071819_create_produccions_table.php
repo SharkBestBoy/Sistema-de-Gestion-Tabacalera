@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('produccions', function (Blueprint $table) {
             $table->id();
+            $table->integer('cantidad');
+            $table->integer('idVitola');
+            $table->foreignId('idVitola')->references('id')->on('vitolas');
+            $table->integer('idFecha');
+            $table->foreignId('idFecha')->references('id')->on('fechas');
+            
             $table->timestamps();
         });
     }

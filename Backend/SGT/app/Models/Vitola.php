@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Vitola extends Model
 {
     use HasFactory;
+
+    public $table = 'vitolas';
+    protected $fillable = [
+        'nombre',
+        'categoria',
+    ];
 }

@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('empleados', function (Blueprint $table) {
             $table->id();
+            $table->string("nombre");
+            $table->string("apellidos");
+            $table->string("direccionLocal");
+            $table->unsignedBigInteger('idBrigada');
+            $table->foreign('idBrigada')->references('id')->on('brigadas')->onDelete('cascade');
+
             $table->timestamps();
         });
     }
