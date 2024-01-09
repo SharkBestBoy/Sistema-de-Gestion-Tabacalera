@@ -16,10 +16,10 @@ return new class extends Migration
             $table->string("nombre");
             $table->string("apellidos");
             $table->string("direccionLocal");
-            $table->foreignId('brigada_id')
+            $table->foreignId('brigada_id')            
+            ->nullable()
             ->references('id')
             ->on('brigadas')
-            ->nullable()
             ->onDelete('SET NULL');
 
             $table->timestamps();

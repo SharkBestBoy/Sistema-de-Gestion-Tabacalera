@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('brigadas', function (Blueprint $table) {
             $table->id();
-            $table->integer('numero');
+            $table->integer('numero')->unique();
             $table->timestamps();
         });
     }
