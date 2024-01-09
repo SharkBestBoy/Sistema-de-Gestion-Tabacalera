@@ -11,14 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('produccions', function (Blueprint $table) {
+        Schema::create('empleados', function (Blueprint $table) {
             $table->id();
-            $table->integer('cantidad');
-            $table->integer('idVitola');
-            $table->foreignId('idVitola')->references('id')->on('vitolas');
-            $table->integer('idFecha');
-            $table->foreignId('idFecha')->references('id')->on('fechas');
-            
+            $table->string("nombre");
+            $table->string("apellidos");
+            $table->string("direccionLocal");
+            $table->foreignId('brigada_id')
+            ->references('id')
+            ->on('brigadas')
+            ->nullable()
+            ->onDelete('SET NULL');
+
             $table->timestamps();
         });
     }
@@ -28,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('produccions');
+        Schema::dropIfExists('empleados');
     }
 };

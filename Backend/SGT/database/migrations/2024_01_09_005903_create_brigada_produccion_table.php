@@ -13,10 +13,16 @@ return new class extends Migration
     {
         Schema::create('brigada_produccion', function (Blueprint $table) {
             $table->id();
-            $table->integer('idBrigada');
-            $table->foreignId('idBrigada')->references('id')->on('brigadas');
-            $table->integer('idProduccion');
-            $table->foreignId('idProduccion')->references('id')->on('produccions');
+            $table->foreignId('brigada_id')
+            ->references('id')
+            ->on('brigadas')
+            ->nullable()
+            ->onDelete('SET NULL');
+            $table->foreignId('produccion_id')
+            ->references('id')
+            ->on('produccions')
+            ->nullable()
+            ->onDelete('SET NULL');
             $table->timestamps();
         });
     }
