@@ -2,50 +2,58 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Brigada;
+use App\Models\Fecha;
 use App\Models\Produccion;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class ProduccionController extends Controller
 
 {
     public function index()
     {
-        return response()->json(['empleados' => Produccion::all()]);
+        return response()->json(['producciones' => Produccion::all()]);
     }
 
     public function store(Request $request)
     {
+        try {
+            $data = $request->validate([
+                'cantidad' => 'required',
+                'vitola_id' => 'required',
+                'brigada_id' => 'required',
 
-        $data = $request->validate([
-            'cantidad' => 'required',
-            'vitola_id' => 'required',
-        ]);
-        
-        return Produccion::create($data);
+            ]);
+
+            return Produccion::create($data);
+        } catch (\Exception $e) {
+            // Manejar la excepción de validación aquí
+            return response()->json(['message' => 'Alguno de los IDs proporcionados no existe'], 404);
+        }
     }
 
     public function destroy($id)
     {
         try {
 
-            $brigada = Produccion::findOrFail($id);
-            $brigada->delete();
-            return response()->json(['message' => 'Produccion ' . $id . ' eliminada']);
+            $produccion = Produccion::findOrFail($id);
+            $produccion->delete();
+            return response()->json(['message' => 'Producción ' . $id . ' eliminada']);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Error al eliminar el empleado'], 500);
+            return response()->json(['error' => 'Error al eliminar la producción'], 500);
         }
     }
 
-    public function asignarBrigada($brigada_id, $empleado_id)
-    {
-        try {
-            $empleado = Produccion::findOrFail($empleado_id);
-            $empleado->brigada_id = $brigada_id;
-            $empleado->save();
+    public function produccionesPorFecha(Request $request, $anno, $mes, $dia)
+{
+    $fecha = Fecha::where('anno', $anno)
+                 ->where('mes', $mes)
+                 ->where('dia', $dia)
+                 ->firstOrFail(); // Obtener la fecha correspondiente
 
-            return response()->json(['message' => 'Asignacion de brigada completada']);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Error al asignar la brigada'], 500);
-        }
-    }
+    $producciones = Produccion::where('fecha_id', $fecha->id)->get(); // Obtener las producciones de esa fecha
+
+    return response()->json(['producciones' => $producciones]);
+}
 }

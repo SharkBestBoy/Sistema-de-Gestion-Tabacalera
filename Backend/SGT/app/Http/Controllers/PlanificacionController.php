@@ -25,11 +25,11 @@ class PlanificacionController extends Controller
     {
         try {
 
-            $brigada = Planificacion::findOrFail($id);
-            $brigada->delete();
-            return response()->json(['message' => 'Planificacion ' . $id . ' eliminada']);
+            $planificacion = Planificacion::findOrFail($id);
+            $planificacion->delete();
+            return response()->json(['message' => 'Planificación ' . $id . ' eliminada']);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Error al eliminar la Planificacion'], 500);
+            return response()->json(['error' => 'Error al eliminar la planificación'], 500);
         }
     }
 }

@@ -28,8 +28,8 @@ class EmpleadoController extends Controller
     {
         try {
 
-            $brigada = Empleado::findOrFail($id);
-            $brigada->delete();
+            $empleado = Empleado::findOrFail($id);
+            $empleado->delete();
             return response()->json(['message' => 'Empleado ' . $id . ' eliminada']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al eliminar el empleado'], 500);

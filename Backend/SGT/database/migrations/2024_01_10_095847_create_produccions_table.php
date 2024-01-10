@@ -11,18 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('brigada_produccion', function (Blueprint $table) {
+        Schema::create('produccions', function (Blueprint $table) {
             $table->id();
+            $table->integer('cantidad');
+            $table->foreignId('vitola_id')
+            ->references('id')
+            ->on('vitolas')
+            ->nullable()
+            ->onDelete('SET NULL');
             $table->foreignId('brigada_id')
             ->references('id')
             ->on('brigadas')
             ->nullable()
             ->onDelete('SET NULL');
-            $table->foreignId('produccion_id')
+            $table->foreignId('fecha_id')
             ->references('id')
-            ->on('produccions')
+            ->on('fechas')
             ->nullable()
             ->onDelete('SET NULL');
+            
             $table->timestamps();
         });
     }
@@ -32,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('brigada_produccion');
+        Schema::dropIfExists('produccions');
     }
 };

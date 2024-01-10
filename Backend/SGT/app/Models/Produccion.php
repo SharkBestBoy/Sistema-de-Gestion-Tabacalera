@@ -9,8 +9,10 @@ class Produccion extends Model
 {
     use HasFactory;
 
-    public $table = 'proudccions';
+    public $table = 'produccions';
     public $fillable = [
         'cantidad',
+        'vitola_id',
+        'brigada_id'
     ];
 }
