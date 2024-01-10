@@ -1,5 +1,4 @@
 <template>
-<v-app>
   <v-container fluid class="fill-height">
     <v-row align="center" justify="center">
       <v-col xs="12" sm="12" md="12" lg="12">
@@ -41,7 +40,6 @@
       </v-col>
     </v-row>
   </v-container>
-</v-app>
 </template>
 
 <script>
@@ -55,6 +53,8 @@ export default {
   },
   methods: {
     login() {
+      // Agrega la lógica de autenticación real aquí.
+      // Puedes usar Vuex para gestionar el estado de autenticación.
       console.log('Intento de inicio de sesión:', this.username, this.password);
     }
   }
@@ -65,8 +65,6 @@ export default {
 .fill-height {
   height: 100%;
 }
+
+/* Estilos específicos del componente, si es necesario */
 </style>
-
-
-
-
