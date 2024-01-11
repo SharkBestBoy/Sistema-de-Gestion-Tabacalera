@@ -53,8 +53,6 @@ export default {
   },
   methods: {
     login() {
-      // Agrega la lógica de autenticación real aquí.
-      // Puedes usar Vuex para gestionar el estado de autenticación.
       console.log('Intento de inicio de sesión:', this.username, this.password);
     }
   }
@@ -66,5 +64,4 @@ export default {
   height: 100%;
 }
 
-/* Estilos específicos del componente, si es necesario */
 </style>
