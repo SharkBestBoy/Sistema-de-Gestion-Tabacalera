@@ -17,6 +17,11 @@ return new class extends Migration
             $table->integer('anno');
             $table->integer('mes');
             $table->integer('dia');
+            $table->foreignId('planificacion_id')            
+            ->nullable()
+            ->references('id')
+            ->on('planificacions')
+            ->onDelete('SET NULL');
             $table->timestamps();
         });
     }

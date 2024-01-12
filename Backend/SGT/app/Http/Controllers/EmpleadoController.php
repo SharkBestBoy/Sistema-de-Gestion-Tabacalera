@@ -50,4 +50,20 @@ class EmpleadoController extends Controller
 
     }
 
+    public function empleadosSinBrigada()
+{
+    // Obtener todos los empleados con brigada_id null
+    $empleadosSinBrigada = Empleado::whereNull('brigada_id')->get();
+
+    return response()->json(['empleados' => $empleadosSinBrigada]);
+}
+
+public function empleadosPorBrigada($brigadaId)
+{
+    // Obtener todos los empleados asignados a la brigada específica
+    $empleadosPorBrigada = Empleado::where('brigada_id', $brigadaId)->get();
+
+    return response()->json(['empleados' => $empleadosPorBrigada]);
+}
+
 }

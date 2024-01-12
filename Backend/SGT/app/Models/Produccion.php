@@ -13,6 +13,7 @@ class Produccion extends Model
     public $fillable = [
         'cantidad',
         'vitola_id',
-        'brigada_id'
+        'brigada_id',
+        'fecha_id'
     ];
 }
