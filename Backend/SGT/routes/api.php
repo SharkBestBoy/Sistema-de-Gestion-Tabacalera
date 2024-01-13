@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\BrigadaController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\FechaController;
@@ -19,9 +20,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+//  Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//      return $request->user();
+//  });
 Route::get('brigadas', [BrigadaController::class, 'index']);
 Route::post('brigadas', [BrigadaController::class, 'store']);
 Route::delete('brigadas/{id}', [BrigadaController::class, 'destroy']);
@@ -36,7 +37,8 @@ Route::post('empleados/brigada_{brigada_id}/empleado_{empleado_id}', [EmpleadoCo
 Route::get('produccions', [ProduccionController::class, 'index']);
 Route::post('produccions', [ProduccionController::class, 'store']);
 Route::delete('produccions/{id}', [ProduccionController::class, 'destroy']);
-Route::get('produccions/suma', [ProduccionController::class, 'sumaProduccionPorDia']);
+Route::get('produccions/suma/{fecha_id}', [ProduccionController::class, 'sumaProduccionPorDia']);
+Route::get('produccions/porcentajeDiario/{fechaID}', [ProduccionController::class, 'calcularPorcentajeCumplimiento']);
 
 
 Route::get('vitolas', [VitolaController::class, 'index']);
@@ -47,5 +49,19 @@ Route::post('addFecha', [FechaController::class, 'crearFechas']);
 
 Route::get('planificacions', [PlanificacionController::class, 'index']);
 Route::post('planificacions', [PlanificacionController::class, 'store']);
+Route::get('planificacions/{planificacion_id}', [PlanificacionController::class, 'calcularPlanificacionDiaria']);
 
 Route::get('fechas', [FechaController::class, 'buscarFecha_ID']);
+
+
+
+// !!!PARA LOGIN !!!
+Route::post('login', [AuthController::class, 'login']);
+Route::post('register', [AuthController::class, 'register']);
+
+Route::group(['middleware' => ['auth:sanctum']], function(){
+    Route::get('user-profile', [AuthController::class, 'userProfile']);
+    Route::post('logout', [AuthController::class, 'logout']);
+});
+
+Route::get('users', [AuthController::class, 'allUsers']);

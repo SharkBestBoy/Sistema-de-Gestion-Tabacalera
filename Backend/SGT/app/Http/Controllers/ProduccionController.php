@@ -60,14 +60,15 @@ class ProduccionController extends Controller
     }
 
 
-    public function sumaProduccionPorDia(Request $request)
+    public function sumaProduccionPorDia($fechaID)
     {
-
-        $fecha = Fecha::where('dia', $request->dia)
-            ->where('mes', $request->mes)
-            ->where('anno', $request->anno)
-            ->firstOrFail();
         // Obtener la fecha específica
+        $fecha = Fecha::find($fechaID);
+
+        if (!$fecha) {
+            return response()->json(['error' => 'Fecha no encontrada'], 404);
+        }
+
         $fecha_id = $fecha->id;
 
         // Obtener las producciones asociadas a la fecha
@@ -78,4 +79,43 @@ class ProduccionController extends Controller
 
         return response()->json(['suma_produccion' => $sumaProduccion]);
     }
+
+    public function calcularPorcentajeCumplimiento($fechaId)
+    {
+        // Obtener la producción diaria
+        $sumaProduccionDiaria = $this->sumaProduccionPorDia($fechaId);
+
+        $data = json_decode($sumaProduccionDiaria->content(),true);
+        $produccionDiaria = $data['suma_produccion'];
+
+          // Obtener la planificación id a partir de la fecha
+    $fecha = Fecha::find($fechaId);
+    
+    if (!$fecha) {
+        return response()->json(['error' => 'Fecha no encontrada'], 404);
+    }
+
+    $planificacionId = $fecha->planificacion_id;
+
+    // Verificar si la planificación id es válida
+    if (!$planificacionId) {
+        return response()->json(['error' => 'La fecha no tiene una planificación asociada'], 404);
+    }
+
+        // ARREGLAR ESTO QUE ME ESTA LLAMANDO AL METODO CALCULARPLANIFICACIONDIARIA CON FECHAID Y NO CON PLANIFICACIONID
+        // Obtener la planificación diaria
+
+        $planificacionController = app(PlanificacionController::class);
+        $planificacionDiaria = $planificacionController->calcularPlanificacionDiaria($planificacionId);
+        $planificacionDiaria= json_decode($planificacionDiaria->content())->planificacionDiaria;
+         
+        // Calcular el porcentaje de cumplimiento
+        $porcentajeCumplimiento = 0;
+        if ($planificacionDiaria > 0) {
+            $porcentajeCumplimiento = ($produccionDiaria / $planificacionDiaria) * 100;
+        }
+
+        return response()->json(['porcentajeCumplimiento' => $porcentajeCumplimiento]);
+    }
 }
+

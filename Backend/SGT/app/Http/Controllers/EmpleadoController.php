@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Brigada;
 use Illuminate\Http\Request;
 use App\Models\Empleado;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 
 class EmpleadoController extends Controller
 {
@@ -15,13 +17,16 @@ class EmpleadoController extends Controller
 
     public function store(Request $request)
     {
+        
 
-        $data = $request->validate([
-            'nombre' => 'required',
-            'apellidos' => 'required',
-            'direccionLocal' => 'required',
-        ]);
-        return Empleado::create($data);
+            $data = $request->validate([
+                'nombre' => 'required',
+                'apellidos' => 'required',
+                'direccionLocal' => 'required',
+            ]);
+            return Empleado::create($data);
+            
+    
     }
 
     public function destroy($id)
@@ -38,32 +43,30 @@ class EmpleadoController extends Controller
 
     public function asignarBrigada($brigada_id, $empleado_id)
     {
-        try{
-        $empleado = Empleado::findOrFail($empleado_id);
-        $empleado->brigada_id = $brigada_id;
-        $empleado->save();
+        try {
+            $empleado = Empleado::findOrFail($empleado_id);
+            $empleado->brigada_id = $brigada_id;
+            $empleado->save();
 
-        return response()->json(['message' => 'Asignacion de brigada completada']);
-    }catch (\Exception $e) {
-        return response()->json(['error' => 'Error al asignar la brigada'], 500);
-    }
-
+            return response()->json(['message' => 'Asignacion de brigada completada']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al asignar la brigada'], 500);
+        }
     }
 
     public function empleadosSinBrigada()
-{
-    // Obtener todos los empleados con brigada_id null
-    $empleadosSinBrigada = Empleado::whereNull('brigada_id')->get();
+    {
+        // Obtener todos los empleados con brigada_id null
+        $empleadosSinBrigada = Empleado::whereNull('brigada_id')->get();
 
-    return response()->json(['empleados' => $empleadosSinBrigada]);
-}
+        return response()->json(['empleados' => $empleadosSinBrigada]);
+    }
 
-public function empleadosPorBrigada($brigadaId)
-{
-    // Obtener todos los empleados asignados a la brigada específica
-    $empleadosPorBrigada = Empleado::where('brigada_id', $brigadaId)->get();
+    public function empleadosPorBrigada($brigadaId)
+    {
+        // Obtener todos los empleados asignados a la brigada específica
+        $empleadosPorBrigada = Empleado::where('brigada_id', $brigadaId)->get();
 
-    return response()->json(['empleados' => $empleadosPorBrigada]);
-}
-
+        return response()->json(['empleados' => $empleadosPorBrigada]);
+    }
 }

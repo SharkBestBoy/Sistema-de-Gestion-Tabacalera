@@ -11,6 +11,6 @@ class Planificacion extends Model
     public $table = 'planificacions';
     public $fillable = [
         'planificacionMensual',
-
+        'diasLaborables'
     ];
 }

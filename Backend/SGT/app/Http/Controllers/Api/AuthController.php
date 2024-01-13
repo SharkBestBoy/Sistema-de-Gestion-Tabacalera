@@ -9,27 +9,32 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     public function register(Request $request) {
+        try {
+
         //validación de los datos
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed'
         ]);    
+
         //alta del usuario
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
         $user->save();
-        //respuesta
-        /* return response()->json([
-            "message" => "Alta exitosa"
-        ]); */
+
         return response($user, Response::HTTP_CREATED);
+    } catch (ValidationException $e) {
+        // Manejar errores de validación
+        return response($e->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
     }
 
     public function login(Request $request) {
