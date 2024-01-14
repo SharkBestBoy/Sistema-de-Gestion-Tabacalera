@@ -2,13 +2,13 @@
     <v-container grid-list-xL>
         <v-row row wrap>
 
-
+    
      <!--Aqui esta el formulario principal encargado de crear las producciones-->
 
        <v-col md6 v-if="formAgregar">
        <v-card class="mb-3">
        <v-card-text>
-        <h1 style="color:black;">Crear Produccion Diaria</h1>
+        <h1 style="color:black;">Crear Producción Diaria</h1>
        </v-card-text>
        <div>
         <v-divider
@@ -52,7 +52,7 @@
        <v-col md6 v-if="!formAgregar">
         <v-card class="mb-3">
         <v-card-text>
-         <h1 style="color:black;">Crear Produccion Diaria</h1>
+         <h1 style="color:black;">Crear Producción Diaria</h1>
         </v-card-text>
         <div>
          <v-divider
@@ -95,11 +95,12 @@
 
 
        <!--Aqui se encuentra todo lo relacionado con las producciones que se crean-->
+    
        <v-col md6>
 
         <v-card class="mb-3" v-for="(item,index) in listaProducciones" :key="index">
         <v-card-text>
-          <h1>Produccion Creada</h1>
+          <h1>Producción Creada</h1>
         </v-card-text> 
         
         <div>
@@ -143,6 +144,45 @@
        </v-col>
 
 
+       <!--Aqui todo relacionado con las estadisticas--> 
+       <v-col md6>
+        <v-card>
+          <v-card-text>
+           <h1>Estadísticas</h1>
+          </v-card-text> 
+         <div>
+          <v-divider
+          :thickness="8"
+          class="border-opacity-50"
+            color="success"
+  >       </v-divider>
+         </div>
+         <v-card-text>
+         <ul>
+          <li>
+           <h3>Cantidad de producciones:</h3>
+          </li>
+          <li>
+            <h3>Cantidad total producida en el día:</h3>
+          </li>
+          <li>
+            <h3>Porcentaje del cumplimiento con respecto al plan mensual:</h3>
+          </li>
+         </ul><br>
+               
+         <v-btn black color="success">Calcular</v-btn>
+         <v-btn black color="warning" class="ml-10">Ver datos anteriores</v-btn>
+        </v-card-text>
+          
+           </v-card>   
+
+       </v-col>
+
+       <v-divider
+       :thickness="8"
+       class="border-opacity-50"
+         color="success"
+>       </v-divider><br>
         </v-row>
       <!--Snackbar que muestra los mensajes cuando se realizan las operaciones-->
         <v-snackbar
@@ -161,7 +201,7 @@
         </template>
       </v-snackbar>
         
-        
+     <v-btn black color="success">Agragar producciones del Dia</v-btn>   
     </v-container>
 </template>
 <!--Aqui estan los scripts(en la seccion data estan los datos y en methods estan todos los metodos)-->
@@ -184,7 +224,9 @@ data(){
     snackbar:false,
     mensaje: '',
     formAgregar: true,
-    indexProduccion:''
+    indexProduccion:'',
+   
+    
     }
 },  
 
@@ -239,7 +281,8 @@ data(){
     this.cant_producida = ''
     this.snackbar = true
     this.mensaje = 'Se ha editado correctamente la produccion!'
-   }
+   },
+
   },
 
 }
