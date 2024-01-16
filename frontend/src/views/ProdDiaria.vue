@@ -168,7 +168,6 @@ export default {
               categoria: this.Categoria,
             }
           });
-          console.log(response.data);
           this.arrayNombreVitola = response.data.vitolas;
         }
       } catch (error) {

@@ -7,10 +7,10 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
-    "@mdi/font": "5.9.55",
+    "@mdi/font": "^7.4.47",
     "axios": "^1.6.5",
     "roboto-fontface": "*",
-    "vue": "^3.2.13",
+    "vue": "^3.4.14",
     "vue-router": "^4.0.3",
     "vuetify": "^3.4.10",
     "webfontloader": "^1.0.0"

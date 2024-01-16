@@ -10,6 +10,7 @@ class BrigadaController extends Controller
 
     public function index()
     {
+        
         return response()->json(['brigadas' => Brigada::all()]);
     }
 
@@ -22,15 +23,18 @@ class BrigadaController extends Controller
         return Brigada::create($data);
     }
 
-    public function destroy($id)
+    public function destroy($brigada_id)
     {
         try {
 
-            $brigada = Brigada::findOrFail($id);
+            $brigada = Brigada::findOrFail($brigada_id);
             $brigada->delete();
-            return response()->json(['message' => 'Brigada ' . $id . ' eliminada']);
+            return response()->json(['message' => 'Brigada ' . $brigada_id . ' eliminada']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al eliminar la brigada'], 500);
         }
     }
+
+
+
 }

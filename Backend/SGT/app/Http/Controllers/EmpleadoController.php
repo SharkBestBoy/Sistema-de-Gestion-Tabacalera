@@ -69,4 +69,11 @@ class EmpleadoController extends Controller
 
         return response()->json(['empleados' => $empleadosPorBrigada]);
     }
+
+    public function cantEmpleadosBrigada($brigada_id){
+
+        $cantEmpleados = Empleado::where('brigada_id',$brigada_id)->get()->count();
+
+        return $cantEmpleados;
+    }
 }

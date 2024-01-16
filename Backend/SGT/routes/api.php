@@ -32,6 +32,7 @@ Route::get('empleados', [EmpleadoController::class, 'index']);
 Route::post('empleados', [EmpleadoController::class, 'store']);
 Route::delete('empleados/{id}', [EmpleadoController::class, 'destroy']);
 Route::post('empleados/brigada_{brigada_id}/empleado_{empleado_id}', [EmpleadoController::class, 'asignarBrigada']);
+Route::get('cant-empleados-brigada/{brigada_id}', [EmpleadoController::class, 'cantEmpleadosBrigada']);
 
 
 Route::get('produccions', [ProduccionController::class, 'index']);
