@@ -15,15 +15,14 @@
           </div>
           <br>
           <v-form @submit.prevent="agregarProduccion">
-            <v-autocomplete label=" Escriba la categoria"
-              :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']" v-model="Categoria"
-              @input="autoCompletableCategoriaVitola"></v-autocomplete>
+            <v-autocomplete label=" Escriba la categoria" :items="['IX', 'VIII', 'VII']" v-model="Categoria"
+              @blur="autoCompletableNombreVitola"></v-autocomplete>
             <br>
-            <v-autocomplete label="Escriba la  vitola" :items="arrayNombreVitola" v-model="vitola"></v-autocomplete>
+            <v-autocomplete label="Escriba el nombre de la vitola" :items="arrayNombreVitola"
+              v-model="vitola"></v-autocomplete>
             <br>
-            <v-autocomplete label=" Escriba la brigada"
-              :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
-              v-model="brigada"></v-autocomplete>
+            <v-autocomplete label=" Escriba el # de la brigada" :items="arrayBrigada" v-model="brigada"
+              @blur="autoCompletableBrigadas"></v-autocomplete>
             <br>
             <v-text-field label=" Cantidad Trabajores de la Brigada" variant="outlined"
               v-model="cant_trabajadores"></v-text-field>
@@ -49,17 +48,14 @@
           </div>
           <br>
           <v-form @submit.prevent="editarProduccionA">
-            <v-autocomplete label=" Escriba la categoria"
-              :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
-              v-model="Categoria"></v-autocomplete>
+            <v-autocomplete label=" Escriba la categoria" :items="['IX', 'VIII', 'VII']" v-model="Categoria"
+              @blur="autoCompletableNombreVitola"></v-autocomplete>
             <br>
-            <v-autocomplete label="Escriba la  vitola"
-              :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
+            <v-autocomplete label="Escriba el nombre de la  vitola" :items="arrayNombreVitola"
               v-model="vitola"></v-autocomplete>
             <br>
-            <v-autocomplete label=" Escriba la brigada"
-              :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
-              v-model="brigada"></v-autocomplete>
+            <v-autocomplete label=" Escriba la brigada" :items="arrayBrigada" v-model="brigada"
+              @blur="autoCompletableBrigadas"></v-autocomplete>
             <br>
             <v-text-field label=" Cantidad Trabajores de la Brigada" variant="outlined"
               v-model="cant_trabajadores"></v-text-field>
@@ -154,33 +150,45 @@ export default {
       mensaje: '',
       formAgregar: true,
       indexProduccion: '',
-      arrayNombreVitola: ''
+      arrayNombreVitola: '',
+      arrayBrigada: ''
     }
   },
-// HACER EN LA API METODO PARA BUSCAR TODAS LAS CATEGORIAS Q HAY PARA LLAMARLO, Y TAMBIEN HACER EL DE OBTENER NOMBRES D VITOLAS PASANDOLE LA CATEGORIA
+  // HACER EN LA API METODO PARA BUSCAR TODAS LAS CATEGORIAS Q HAY PARA LLAMARLO, Y TAMBIEN HACER EL DE OBTENER NOMBRES D VITOLAS PASANDOLE LA CATEGORIA
   created() {
-    this.autoCompletableNombreVitola();
+    this.autoCompletableBrigadas()
   },
   methods: {
     async autoCompletableNombreVitola() {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/vitolas`);
-        this.arrayNombreVitola = response.data.vitolas.map(vitola => vitola.nombre);
-      } catch (error) {
-        console.error('Error al obtener las vitolas:', error);
-      }
-    },
 
-    async autoCompletableCategoriaVitola() {
-      try {
         if (this.Categoria !== '') {
-          const response = await axios.get(`http://127.0.0.1:8000/api/vitolas/${this.Categoria}`);
-          this.arrayNombreVitola = response.data.vitolas.map(vitola => vitola.nombre);
+          const response = await axios.get(`http://127.0.0.1:8000/api/vitolasPorCategoria`, {
+            params: {
+              categoria: this.Categoria,
+            }
+          });
+          console.log(response.data);
+          this.arrayNombreVitola = response.data.vitolas;
         }
       } catch (error) {
         console.error('Error al obtener las vitolas:', error);
       }
     },
+
+    async autoCompletableBrigadas() {
+      try {
+
+        const response = await axios.get(`http://127.0.0.1:8000/api/brigadas`);
+        console.log(response.data);
+        this.arrayBrigada = response.data.brigadas.map(brigadas => brigadas.numero);
+
+      } catch (error) {
+        console.error('Error al obtener las vitolas:', error);
+      }
+    },
+
+
 
 
     agregarProduccion() {

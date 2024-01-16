@@ -68,7 +68,6 @@ class ProduccionController extends Controller
         if (!$fecha) {
             return response()->json(['error' => 'Fecha no encontrada'], 404);
         }
-
         $fecha_id = $fecha->id;
 
         // Obtener las producciones asociadas a la fecha

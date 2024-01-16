@@ -44,6 +44,7 @@ Route::get('produccions/porcentajeDiario/{fechaID}', [ProduccionController::clas
 Route::get('vitolas', [VitolaController::class, 'index']);
 Route::post('vitolas', [VitolaController::class, 'store']);
 Route::delete('vitolas/{id}', [VitolaController::class, 'destroy']);
+Route::get('vitolasPorCategoria', [VitolaController::class, 'vitolasPorCategoria']);
 
 Route::post('addFecha', [FechaController::class, 'crearFechas']);
 
