@@ -11,7 +11,7 @@
             <h1 style="color:black;">Crear Producción Diaria</h1>
           </v-card-text>
           <div>
-            <v-divider :thickness="8" class="border-opacity-50" color="success"> </v-divider>
+            <v-divider :thickness="8" class="border-opacity-50" color="brown"> </v-divider>
           </div>
           <br>
           <v-form @submit.prevent="agregarProduccion">
@@ -22,20 +22,38 @@
               v-model="vitola"></v-autocomplete>
             <br>
             <v-autocomplete label=" Escriba el # de la brigada" :items="arrayBrigada" v-model="brigada"
-              @blur="autoCompletableBrigadas"></v-autocomplete>
+              @blur="mostrarCantidadEmpleados"></v-autocomplete>
             <br>
-            <v-text-field label=" Cantidad Trabajores de la Brigada" variant="outlined"
-              v-model="cant_trabajadores"></v-text-field>
+            <v-row align="center">
+
+              <v-col cols="7"  >
+                
+                <v-text-field hide-details label=" Cantidad Trabajores de la Brigada" variant="outlined"
+                v-model="cant_trabajadores"
+                type="number"
+                @change="calcularCantEmpleadosRestantes"></v-text-field>
+             
+              </v-col>
+              <v-col >
+                <v-card>
+
+                  <v-card-text><h4>Total de empleados: {{cantEmpleados}} </h4></v-card-text>
+                  <v-card-text><h4>Empleados restantes: {{cantEmpleadosRestantes}} </h4></v-card-text>
+
+                </v-card>
+                </v-col>
+            </v-row>
+             
             <br>
             <v-text-field label="Introduzca Cantidad Producida" variant="outlined"
-              v-model="cant_producida"></v-text-field>
-            <br>
-            <v-btn black color="success" class="ml-15" type="submit">Crear Produccion</v-btn>
+              v-model="cant_producida"
+              type="number"></v-text-field>
+                <v-container>
+                  <v-btn block rounded="xl" elevation="16" color="success" type="submit">Crear Producción</v-btn>
+                </v-container>
           </v-form>
         </v-card>
       </v-col>
-
-
 
       <!--Aqui esta el formulario copiado para la operacion del editar-->
       <v-col md6 v-if="!formAgregar">
@@ -44,7 +62,7 @@
             <h1 style="color:black;">Crear Producción Diaria</h1>
           </v-card-text>
           <div>
-            <v-divider :thickness="8" class="border-opacity-50" color="success"> </v-divider>
+            <v-divider :thickness="8" class="border-opacity-50" color="brown"> </v-divider>
           </div>
           <br>
           <v-form @submit.prevent="editarProduccionA">
@@ -58,12 +76,19 @@
               @blur="autoCompletableBrigadas"></v-autocomplete>
             <br>
             <v-text-field label=" Cantidad Trabajores de la Brigada" variant="outlined"
-              v-model="cant_trabajadores"></v-text-field>
+              v-model="cant_trabajadores"
+              type="number"></v-text-field>
             <br>
             <v-text-field label="Introduzca Cantidad Producida" variant="outlined"
-              v-model="cant_producida"></v-text-field>
+              v-model="cant_producida"
+              type="number"></v-text-field>
             <br>
-            <v-btn black color="warning" class="ml-15" type="submit">Editar Produccion</v-btn>
+            <v-container>
+
+            <v-btn black color="success" class="ml-15" type="submit">Editar Producción</v-btn>
+            <v-btn black color="warning" class="ml-15" @click="cancelarEditar">Cancelar</v-btn>
+            </v-container>
+
           </v-form>
         </v-card>
       </v-col>
@@ -81,7 +106,7 @@
           </v-card-text>
 
           <div>
-            <v-divider :thickness="8" class="border-opacity-50" color="success"> </v-divider>
+            <v-divider :thickness="8" class="border-opacity-50" color="brown"> </v-divider>
           </div>
 
           <v-card-text>
@@ -123,7 +148,7 @@
           <v-divider
           :thickness="8"
           class="border-opacity-50"
-            color="success"
+            color="brown"
   >       </v-divider>
          </div>
          <v-card-text>
@@ -150,7 +175,7 @@
        <v-divider
        :thickness="8"
        class="border-opacity-50"
-         color="success"
+         color="brown"
 >       </v-divider><br>
         </v-row>
       <!--Snackbar que muestra los mensajes cuando se realizan las operaciones-->
@@ -196,7 +221,10 @@ export default {
       formAgregar: true,
       indexProduccion: '',
       arrayNombreVitola: '',
-      arrayBrigada: ''
+      arrayBrigada: '',
+      cantEmpleados:0,
+      cantEmpleadosRestantes:0,
+      cantEmpleadosAgregados: 0
     }
   },
   // HACER EN LA API METODO PARA BUSCAR TODAS LAS CATEGORIAS Q HAY PARA LLAMARLO, Y TAMBIEN HACER EL DE OBTENER NOMBRES D VITOLAS PASANDOLE LA CATEGORIA
@@ -232,6 +260,14 @@ export default {
       }
     },
 
+    async mostrarCantidadEmpleados(){
+      const numeroBrigada= this.brigada;
+      const response = await axios.get(`http://127.0.0.1:8000/api/cant-empleados-brigada/${numeroBrigada}`);
+      this.cantEmpleados=response.data;
+      
+
+
+    },
 
 
 
@@ -254,13 +290,13 @@ export default {
           this.cant_trabajadores = ''
         this.cant_producida = ''
         this.snackbar = true
-        this.mensaje = 'Produccion creada con exito!'
+        this.mensaje = 'Producción creada con exito!'
       }
     },
     eliminarProduccion(id) {
       this.listaProducciones = this.listaProducciones.filter(e => e.id != id)
       this.snackbar = true
-      this.mensaje = 'Produccion eliminada correctamente!'
+      this.mensaje = 'Producción eliminada correctamente!'
     },
     editarProduccion(index) {
       this.formAgregar = false
@@ -284,9 +320,22 @@ export default {
       this.cant_trabajadores = ''
       this.cant_producida = ''
       this.snackbar = true
-      this.mensaje = 'Se ha editado correctamente la produccion!'
+      this.mensaje = 'Se ha editado correctamente la producción!'
+    },
+    cancelarEditar(){
+      this.formAgregar = true
+      this.Categoria = ''
+      this.vitola = ''
+      this.brigada = ''
+      this.cant_trabajadores = ''
+      this.cant_producida = ''
+      this.snackbar = true
+      this.mensaje = 'Se ha cancelado la edición !'
     }
   },
+   calcularCantEmpleadosRestantes(){
+    this.cantEmpleadosRestantes=this.cantEmpleados-this.cantEmpleadosAgregados
+  }
 
 }
 
