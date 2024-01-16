@@ -15,12 +15,20 @@ const routes = [
       return import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
     }
   },
+ 
   {
     path: '/add',
     name: 'login',
     component: Login
   },
+  {
+    path: '/AddEmpleado',
+    name: 'AddEmpleado',
 
+    component: function () {
+      return import(/* webpackChunkName: "about" */ '../views/AddEmpleado')
+    }
+  },
 
   {
     path:'/ProdDiaria',

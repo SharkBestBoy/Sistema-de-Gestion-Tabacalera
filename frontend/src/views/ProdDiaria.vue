@@ -37,9 +37,9 @@
             v-model="brigada"
             ></v-autocomplete>
         <br>
-        <v-text-field  label=" Cantidad Trabajores de la Brigada" variant="outlined" v-model="cant_trabajadores"></v-text-field>
+        <v-text-field  label=" Cantidad Trabajores de la Brigada" variant="outlined" type="number" v-model="cant_trabajadores"></v-text-field>
         <br>
-        <v-text-field  label="Introduzca Cantidad Producida" variant="outlined" v-model="cant_producida"></v-text-field>
+        <v-text-field  label="Introduzca Cantidad Producida" variant="outlined" type="number" v-model="cant_producida"></v-text-field>
        <br>
        <v-btn black color="success" class="ml-15" type="submit">Crear Produccion</v-btn>
         </v-form>
@@ -282,8 +282,11 @@ data(){
     this.snackbar = true
     this.mensaje = 'Se ha editado correctamente la produccion!'
    },
-
+  calcularEstadisticas(){
+   
   },
+
+  }
 
 }
 
