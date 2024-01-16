@@ -20,6 +20,8 @@ const routes = [
     name: 'login',
     component: Login
   },
+
+
   {
     path:'/ProdDiaria',
     name: 'prodDiaria',
