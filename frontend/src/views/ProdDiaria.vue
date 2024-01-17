@@ -95,23 +95,31 @@
 
 
        <!--Aqui se encuentra todo lo relacionado con las producciones que se crean-->
-    
+       
        <v-col md6>
-
+    
+        <v-card-text>
+          <h1>Lista de Producciones</h1>
+          <div>
+          <v-divider
+          :thickness="8"
+          class="border-opacity-50"
+          color="success"
+          style="margin-top: -5px;"
+  >       </v-divider>
+         </div>
+        </v-card-text>
+        <v-container>
+         <v-card>
+        <v-virtual-scroll
+         :items="Array.from({length: 100}).map((_, index) => index)"
+         :item-height="50"
+         height="548"
+         
+         >
+       
         <v-card class="mb-3" v-for="(item,index) in listaProducciones" :key="index">
         <v-card-text>
-          <h1>Producción Creada</h1>
-        </v-card-text> 
-        
-        <div>
-            <v-divider
-            :thickness="8"
-            class="border-opacity-50"
-              color="success"
-    >       </v-divider>
-           </div>
-          
-          <v-card-text>
             <v-chip
           class="ma-2"
           color="green"
@@ -139,8 +147,11 @@
           <v-btn color="error" @click="eliminarProduccion(item.id)" class="ml-10" >Eliminar</v-btn>
           </v-card-text> 
         
+      
         </v-card>
-  
+      </v-virtual-scroll>
+        </v-card>
+      </v-container>
        </v-col>
 
 
@@ -212,8 +223,8 @@ export default{
 data(){
     return{
     listaProducciones:[
-     {id:1, Categoria:'Categoria#1',vitola:'vitola',brigada:'brigada',cant_trabajadores:'cant trabajadores',cant_producida:'cant producida'}, 
-     {id:2, Categoria:'Categoria#2',vitola:'vitola',brigada:'brigada',cant_trabajadores:'cant trabajadores',cant_producida:'cant producida'}
+     { Categoria:'Categoria#1',vitola:'vitola',brigada:'brigada',cant_trabajadores:'cant trabajadores',cant_producida:'cant producida'}, 
+     { Categoria:'Categoria#2',vitola:'vitola',brigada:'brigada',cant_trabajadores:'cant trabajadores',cant_producida:'cant producida'}
     ],
 
     Categoria:'',   
@@ -224,7 +235,7 @@ data(){
     snackbar:false,
     mensaje: '',
     formAgregar: true,
-    indexProduccion:'',
+   
    
     
     }
@@ -282,12 +293,10 @@ data(){
     this.snackbar = true
     this.mensaje = 'Se ha editado correctamente la produccion!'
    },
-  calcularEstadisticas(){
    
   },
-
-  }
-
+  
+  
 }
 
 
