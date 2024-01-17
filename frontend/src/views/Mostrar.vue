@@ -1,103 +1,107 @@
+<template>
+  <v-container style="margin-top: 60px;">
+    <div>
+      <v-divider
+      :thickness="8"
+      class="border-opacity-50"
+        color="green"
+        style="margin-top:5px;"
+    >       </v-divider>
+     </div>
+  <v-text-field label="Seleccione la fecha " type="date" 
+    @input="selected"></v-text-field>
+  </v-container>
+<v-container>
 
-    <template>
-      <v-container>
-      <div>
-        <v-sheet
-          tile
-          height="54"
-          class="d-flex"
-        >
-          <v-select
-            v-model="type"
-            :items="types"
-            dense
-            variant="outlined"
-            hide-details
-            class="ma-2"
-            label="View Mode"
-          ></v-select>
-          <v-select
-            v-model="weekday"
-            :items="weekdays"
-            dense
-            variant="outlined"
-            hide-details
-            label="weekdays"
-            class="ma-2"
-          ></v-select>
-        </v-sheet>
-        <v-sheet>
-          <v-calendar
-            ref="calendar"
-            v-model="value"
-            :weekdays="weekday"
-            :view-mode="type"
-            :events="events"
-          ></v-calendar>
-        </v-sheet>
-      </div>
-    </v-container>
-    </template>
+<v-row row wrap style="margin-top: -40px;">
+<v-col md6>
+  <v-card-text style="margin-top: -20px;">
+    <v-chip color="success">
+    <h1>Lista de Producciones del Día Seleccionado:</h1>
+   </v-chip>
+   </v-card-text>
+   
+
+   <v-card class="mb-3" >
+    <v-virtual-scroll
+    :items="Array.from({length: 100}).map((_, index) => index)"
+    :item-height="50"
+    height="548"
+    style="margin-top: 20px;"
+    
+    >
+   <v-card  class="mb-2" v-for="(item,index) in listaProducciones" :key="index">
+   <v-card-text>
+    <v-chip
+  class="ma-2"
+  color="green"
+  
+  
+>
+   <v-icon start icon="mdi-label"></v-icon>
+ {{ item.Categoria }}
+  </v-chip>
+ <ul class="ml-3">
+    <li>
+      {{ item.vitola }}
+    </li>
+    <li>
+       {{ item.brigada }}
+    </li>
+    <li>
+      {{ item.cant_trabajadores }}
+    </li>
+    <li>
+      {{ item.cant_producida }}
+    </li>
+ </ul>
+ <br>
+ <div>
+  <v-divider
+  :thickness="8"
+  class="border-opacity-50"
+    color="green"
+    style="margin-top:5px;"
+>       </v-divider>
+ </div>
+  </v-card-text> 
+  
+</v-card>
+</v-virtual-scroll>
+
+</v-card>
+
+</v-col>
 
 
+</v-row>
+
+
+</v-container>
+</template>
 
 
 <script>
-      import { useDate } from 'vuetify'
-    
-      export default {
-        data: () => ({
-          type: 'month',
-          types: ['month', 'week', 'day'],
-          weekday: [0, 1, 2, 3, 4, 5, 6],
-          weekdays: [
-            { title: 'Sun - Sat', value: [0, 1, 2, 3, 4, 5, 6] },
-            { title: 'Mon - Sun', value: [1, 2, 3, 4, 5, 6, 0] },
-            { title: 'Mon - Fri', value: [1, 2, 3, 4, 5] },
-            { title: 'Mon, Wed, Fri', value: [1, 3, 5] },
-          ],
-          value: [new Date()],
-          events: [],
-          colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
-          titles: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
-        }),
-        mounted () {
-          const adapter = useDate()
-          this.getEvents({ start: adapter.startOfDay(adapter.startOfMonth(new Date())), end: adapter.endOfDay(adapter.endOfMonth(new Date())) })
-        },
-        methods: {
-          getEvents ({ start, end }) {
-            const events = []
-    
-            const min = start
-            const max = end
-            const days = (max.getTime() - min.getTime()) / 86400000
-            const eventCount = this.rnd(days, days + 20)
-    
-            for (let i = 0; i < eventCount; i++) {
-              const allDay = this.rnd(0, 3) === 0
-              const firstTimestamp = this.rnd(min.getTime(), max.getTime())
-              const first = new Date(firstTimestamp - (firstTimestamp % 900000))
-              const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
-              const second = new Date(first.getTime() + secondTimestamp)
-    
-              events.push({
-                title: this.titles[this.rnd(0, this.titles.length - 1)],
-                start: first,
-                end: second,
-                color: this.colors[this.rnd(0, this.colors.length - 1)],
-                allDay: !allDay,
-              })
-            }
-    
-            this.events = events
-          },
-          getEventColor (event) {
-            return event.color
-          },
-          rnd (a, b) {
-            return Math.floor((b - a + 1) * Math.random()) + a
-          },
-        },
-      }
-    </script>
+export default {
+  data(){
+    return{
+    listaProducciones:[
+     { Categoria:'Categoria#1',vitola:'vitola',brigada:'brigada',cant_trabajadores:'cant trabajadores',cant_producida:'cant producida'}
+    ],
+
+    Categoria:'',   
+    vitola:'',
+    brigada:'',
+    cant_trabajadores:'',
+    cant_producida:'',
+    }
+},  
+
+  methods: {
+    selected() {
+
+    }
+  },
+
+}
+</script>
