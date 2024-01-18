@@ -1,42 +1,46 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
-import Login from '../views/Login.vue'
+import { createRouter, createWebHashHistory } from 'vue-router';
+import Login from '../views/Login.vue';
+import Principal from '../views/Principal.vue';
+import ProdDiaria from '../views/ProdDiaria.vue';
+import GestionarBrigada from '@/views/GestionarBrigada.vue';
+import Planificacion from '@/views/Planificacion';
+
 
 const routes = [
   {
     path: '/',
     name: 'login',
-    component: Login
+    component: Login,
   },
   {
-    path: '/about',
-    name: 'about',
-
-    component: function () {
-      return import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-    }
+    path: '/p',
+    name: 'Principal',
+    component: Principal,
   },
   {
-    path: '/add',
-    name: 'login',
-    component: Login
-  },
-  {
-    path:'/ProdDiaria',
+    path: '/pd',
     name: 'prodDiaria',
-
-    component: function () {
-      return import(/* webpackChunkName: "produccionDiaria" */ '../views/ProdDiaria.vue')
-    }
-    
-  }
- 
-    
-  
-]
+    component: ProdDiaria,
+  },
+  {
+    path: '/pl',
+    name: 'planificacion',
+    component: Planificacion,
+  },
+  {
+    path: '/Prueba',
+    name: 'prueba',
+  },
+  {
+    path: '/gb',
+    name: 'gestionarBrigada',
+    component: GestionarBrigada,
+  },
+];
 
 const router = createRouter({
   history: createWebHashHistory(),
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;
