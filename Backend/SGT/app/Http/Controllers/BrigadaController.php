@@ -35,6 +35,23 @@ class BrigadaController extends Controller
         }
     }
 
+    public function obtenerIdPorNumero(Request $request)
+    {
+        try {
+            $numeroBrigada = $request->input('numero');
+            
+            $brigada = Brigada::where('numero', $numeroBrigada)->first();
+
+            if ($brigada) {
+                return response()->json(['id' => $brigada->id]);
+            } else {
+                return response()->json(['message' => 'No se encontró la brigada con ese número'], 404);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error al obtener el ID de la brigada', $e], 500);
+        }
+    }
+
 
 
 }

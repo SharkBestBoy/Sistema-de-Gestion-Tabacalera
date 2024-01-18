@@ -46,4 +46,29 @@ class VitolaController extends Controller
             return response()->json(['error' => 'Error al obtener las vitolas', 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function obtenerIdPorNombre(Request $request)
+    {
+        try {
+            // Validar la solicitud para asegurarse de que contiene el campo 'nombre'
+            $request->validate([
+                'nombre' => 'required|string',
+            ]);
+
+            // Obtener el ID de la vitola por su nombre
+            $nombreVitola = $request->input('nombre');
+            $vitola = Vitola::where('nombre', $nombreVitola)->first();
+
+            if ($vitola) {
+                // Devolver el ID si se encontró la vitola
+                return response()->json(['id' => $vitola->id]);
+            } else {
+                // Devolver una respuesta adecuada si la vitola no se encontró
+                return response()->json(['message' => 'Vitola no encontrada'], 404);
+            }
+        } catch (\Exception $e) {
+            // Manejar excepciones, por ejemplo, devolver un error 500
+            return response()->json(['message' => 'Error interno del servidor'], 500);
+        }
+    }
 }

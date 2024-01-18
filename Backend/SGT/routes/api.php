@@ -46,6 +46,7 @@ Route::get('vitolas', [VitolaController::class, 'index']);
 Route::post('vitolas', [VitolaController::class, 'store']);
 Route::delete('vitolas/{id}', [VitolaController::class, 'destroy']);
 Route::get('vitolasPorCategoria', [VitolaController::class, 'vitolasPorCategoria']);
+Route::post('obtener-id-vitola', [VitolaController::class, 'obtenerIdPorNombre']);
 
 Route::post('addFecha', [FechaController::class, 'crearFechas']);
 Route::get('fechas/dia={dia}/mes={mes}/anno={anno}', [FechaController::class, 'getIdFecha']);

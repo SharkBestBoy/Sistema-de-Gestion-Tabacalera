@@ -97,65 +97,51 @@
 
 
 
-       <!--Aqui se encuentra todo lo relacionado con las producciones que se crean-->
-       
-       <v-col md6>
-    
-        <v-card-text>
-          <h1>Lista de Producciones</h1>
+      <!--Aqui se encuentra todo lo relacionado con las producciones que se crean-->
+
+      <v-col md6>
+
+
+        <v-card>
+          <v-card-text>
+            <h1 style="color:black;">Lista de Producción</h1>
+          </v-card-text>
           <div>
-          <v-divider
-          :thickness="8"
-          class="border-opacity-50"
-          color="success"
-          style="margin-top: -5px;"
-  >       </v-divider>
-         </div>
-        </v-card-text>
-        <v-container>
-         <v-card>
-        <v-virtual-scroll
-         :items="Array.from({length: 100}).map((_, index) => index)"
-         :item-height="50"
-         height="548"
-         
-         >
-       
-        <v-card class="mb-3" v-for="(item,index) in listaProducciones" :key="index">
-        <v-card-text>
-            <v-chip
-          class="ma-2"
-          color="green"
-          label
-    >
-           <v-icon start icon="mdi-label"></v-icon>
-           Categoría:{{ item.Categoria }}
-          </v-chip>
-         <ul>
-            <li>
-              <strong>Vitola:</strong>  {{ item.vitola }}
-            </li>
-            <li>
-              <strong>Brigada #:</strong>  {{ item.brigada }}
-            </li>
-            <li>
-              <strong>Cantidad de Trabajadores:</strong>   {{ item.cant_trabajadores }}
-            </li>
-            <li>
-               {{ item.cant_producida }}
-            </li>
-         </ul>
-         <br>
-          <v-btn color="green" @click="editarProduccion(index)">Editar</v-btn>
-          <v-btn color="error" @click="eliminarProduccion(item.id)" class="ml-10" >Eliminar</v-btn>
-          </v-card-text> 
-        
-      
+            <v-divider :thickness="8" class="border-opacity-50" color="brown"> </v-divider>
+          </div>
+          <br>
+          <v-card height="580" class="scrollable-card">
+
+            <v-card v-for="(item, index) in listaProducciones" :key="index">
+              <v-card-text>
+                <v-chip class="ma-2" color="green" label>
+                  <v-icon start icon="mdi-label"></v-icon>
+                  Categoría:{{ item.Categoria }}
+                </v-chip>
+                <ul>
+                  <li>
+                    <strong>Vitola:</strong> {{ item.vitola }}
+                  </li>
+                  <li>
+                    <strong>Brigada #:</strong> {{ item.brigada }}
+                  </li>
+                  <li>
+                    <strong>Cantidad de Trabajadores:</strong> {{ item.cant_trabajadores }}
+                  </li>
+                  <li>
+                    <strong>Cantidad Producida:</strong> {{ item.cant_producida }}
+                  </li>
+                </ul>
+                <br>
+                <v-btn color="green" @click="editarProduccion(index)">Editar</v-btn>
+                <v-btn color="error" @click="eliminarProduccion(item.id)" class="ml-10">Eliminar</v-btn>
+              </v-card-text>
+
+            </v-card>
+
+          </v-card>
         </v-card>
-      </v-virtual-scroll>
-        </v-card>
-      </v-container>
-       </v-col>
+      </v-col>
 
 
       <!--Aqui todo relacionado con las estadisticas-->
@@ -173,7 +159,7 @@
                 <h3>Cantidad de producciones:</h3>
               </li>
               <li>
-                <h3>Cantidad total producida en el día:</h3>
+                <h3>Cantidad total producida en el día: {{ prodDiariaTotal }}</h3>
               </li>
               <li>
                 <h3>Porcentaje del cumplimiento con respecto al plan mensual:</h3>
@@ -195,13 +181,13 @@
       {{ mensaje }}
 
       <template v-slot:actions>
-        <v-btn color="pink" variant="text" @click="snackbar = false">
+        <v-btn color="red" variant="text" @click="snackbar = false">
           Cerrar
         </v-btn>
       </template>
     </v-snackbar>
 
-    <v-btn black color="success">Agragar producciones del Dia</v-btn>
+    <v-btn black color="success" @click="">Agragar producciones del Dia</v-btn>
   </v-container>
 </template>
 <!--Aqui estan los scripts(en la seccion data estan los datos y en methods estan todos los metodos)-->
@@ -214,6 +200,8 @@ export default {
     return {
       listaProducciones: [
         { id: 1, Categoria: 'Categoria#1', vitola: 'vitola', brigada: 'brigada', cant_trabajadores: 'cant trabajadores', cant_producida: 'cant producida' },
+        { id: 3, Categoria: 'Categoria#1', vitola: 'vitola', brigada: 'brigada', cant_trabajadores: 'cant trabajadores', cant_producida: 'cant producida' },
+        { id: 4, Categoria: 'Categoria#1', vitola: 'vitola', brigada: 'brigada', cant_trabajadores: 'cant trabajadores', cant_producida: 'cant producida' },
         { id: 2, Categoria: 'Categoria#2', vitola: 'vitola', brigada: 'brigada', cant_trabajadores: 'cant trabajadores', cant_producida: 'cant producida' }
       ],
       fechaID: '',
@@ -230,6 +218,7 @@ export default {
       arrayBrigada: '',
       cantEmpleados: '',
       cantEmpleadosRestantes: '',
+      prodDiariaTotal: ''
     }
   },
   // HACER EN LA API METODO PARA BUSCAR TODAS LAS CATEGORIAS Q HAY PARA LLAMARLO, Y TAMBIEN HACER EL DE OBTENER NOMBRES D VITOLAS PASANDOLE LA CATEGORIA
@@ -321,6 +310,7 @@ export default {
           this.mensaje = 'Producción creada con exito!'
           this.cantEmpleados = ''
           this.cantEmpleadosRestantes = ''
+          this.calcularProduccionDiaria()
         }
       }
     },
@@ -373,11 +363,55 @@ export default {
       // No funciona
       asignados += Number(this.cant_trabajadores)
       return this.cantEmpleadosRestantes = this.cantEmpleados - asignados
-    }
-  },
+    },
+    calcularProduccionDiaria() {
+      let prodDiaria = 0
+      for (let i = 0; i < this.listaProducciones.length; i++) {
+        prodDiaria += Number(this.listaProducciones[i].cant_producida)
+      }
+      this.prodDiariaTotal = prodDiaria
+    },
+    async guardarProduccion() {
+      try {
+
+        const responseVitola = await axios.post('http://tu-api.com/obtener-id-vitola', {
+          nombre: this.vitola,
+        })
+        if (responseVitola.data.id) {
+          this.idVitola = responseVitola.data.id;
+        } else {
+          console.error('Vitola no encontrada');
+        }
+
+        const responseBrigada = await axios.get('http://tu-api.com/obtener-id-brigada', {
+          numero: this.brigada,
+        });
+
+        if (responseBrigada.data.id) {
+          this.idVitola = responseBrigada.data.id;
+        } else {
+          console.error('Vitola no encontrada');
+        }
 
 
+
+
+
+
+      } catch (error) {
+        // Manejar errores aquí
+        console.error('Error al enviar los datos:', error);
+      }
+
+    },
+
+
+  }
 }
-
-
 </script>
+
+<style scoped>
+.scrollable-card {
+  overflow-y: auto;
+}
+</style>
