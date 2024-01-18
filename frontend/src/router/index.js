@@ -16,12 +16,6 @@ const routes = [
       return import(/* webpackChunkName: "about" */ '../views/Mostrar.vue')
     }
   },
- 
-  {
-    path: '/add',
-    name: 'login',
-    component: Login
-  },
   {
     path: '/AddEmpleado',
     name: 'AddEmpleado',

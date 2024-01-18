@@ -1,9 +1,15 @@
 <template>
-  <v-container fluid class="fill-height">
-    <v-row align="center" justify="center">
-      <v-col xs="12" sm="12" md="12" lg="12">
-        <v-card class="elevation-12">
-          <v-card-title class="text-h5">
+  <v-container>
+    <v-row justify="center" class="mt-16">
+      <v-col  sm="8" md="5">
+        <v-card class="elevation-12 rounded-xl">
+          <v-container align="center" class="pb-0">
+            <v-img src="../images/logo.jpg"
+            class="rounded-circle"           
+             width="110"
+            ></v-img>
+          </v-container>
+          <v-card-title align="center" class="text-h5">
             <v-icon class="mr-2">mdi-account</v-icon>
             Inicio de sesión
           </v-card-title>
@@ -14,22 +20,20 @@
                   <v-text-field v-model="username" label="Usuario" prepend-icon="mdi-account" required></v-text-field>
                 </v-col>
                 <v-col cols="12">
-                  <v-text-field
-                    v-model="password"
-                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                    :type="showPassword ? 'text' : 'password'"
+                  <v-text-field v-model="password" 
+                  @click:append="cambiarVisibilidadPass"
+                  :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    :type="showPassword ? 'text' : 'password'" 
                     label="Contraseña"
                     prepend-icon="mdi-lock"
-                    required
-                  ></v-text-field>
+                    required></v-text-field>
                 </v-col>
                 <v-col cols="12">
-                  <v-row align="center">
-                    <v-col>
-                      <v-switch v-model="showPassword" label="Mostrar contraseña"></v-switch>
-                    </v-col>
-                    <v-col>
-                      <v-btn type="submit" color="primary" block>Iniciar sesión</v-btn>
+                  <v-row justify="center">
+                    <v-col cols="8">
+                      <v-btn type="submit" color="primary"
+                      append-icon="mdi-login" 
+                      block>Iniciar sesión</v-btn>
                     </v-col>
                   </v-row>
                 </v-col>
@@ -54,6 +58,10 @@ export default {
   methods: {
     login() {
       console.log('Intento de inicio de sesión:', this.username, this.password);
+    },
+    
+    cambiarVisibilidadPass() {
+      this.showPassword = !this.showPassword;
     }
   }
 };
@@ -61,7 +69,6 @@ export default {
 
 <style scoped>
 .fill-height {
-  height: 100%;
+  height: 100vh;
 }
-
 </style>

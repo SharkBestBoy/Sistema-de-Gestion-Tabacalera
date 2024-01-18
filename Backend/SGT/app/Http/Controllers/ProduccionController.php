@@ -20,15 +20,14 @@ class ProduccionController extends Controller
     public function store(Request $request)
     {
         try {
-            $data = $request->validate([
-                'cantidad' => 'required',
-                'vitola_id' => 'required',
-                'brigada_id' => 'required',
-                'fecha_id' => 'required',
-
+            $producciones = $request->validate([
+                '*.cantidad' => 'required',
+                '*.vitola_id' => 'required',
+                '*.brigada_id' => 'required',
+                '*.fecha_id' => 'required',
             ]);
-
-            return Produccion::create($data);
+            
+            return Produccion::createMany($producciones);
         } catch (\Exception $e) {
             // Manejar la excepción de validación aquí
             return response()->json(['message' => 'Alguno de los IDs proporcionados no existe', $e], 404);

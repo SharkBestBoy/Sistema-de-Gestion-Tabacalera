@@ -187,7 +187,7 @@
       </template>
     </v-snackbar>
 
-    <v-btn black color="success" @click="">Agragar producciones del Dia</v-btn>
+    <v-btn black color="success" @click="guardarProduccion()">Agragar producciones del Dia</v-btn>
   </v-container>
 </template>
 <!--Aqui estan los scripts(en la seccion data estan los datos y en methods estan todos los metodos)-->
@@ -274,7 +274,7 @@ export default {
         if (this.brigada !== null) {
           console.log(this.brigada)
           let numeroBrigada = this.brigada;
-          let response = await axios.get(`http://127.0.0.1:8000/api/cant-empleados-brigada/${numeroBrigada}`);
+          const response = await axios.get(`http://127.0.0.1:8000/api/cant-empleados-brigada/${numeroBrigada}`);
           this.cantEmpleados = response.data;
           this.calcularCantEmpleadosRestantes()
         }
@@ -371,33 +371,42 @@ export default {
       }
       this.prodDiariaTotal = prodDiaria
     },
+
     async guardarProduccion() {
       try {
+        this.listaProducciones.forEach(element => {
 
-        const responseVitola = await axios.post('http://tu-api.com/obtener-id-vitola', {
-          nombre: this.vitola,
-        })
-        if (responseVitola.data.id) {
-          this.idVitola = responseVitola.data.id;
-        } else {
-          console.error('Vitola no encontrada');
-        }
 
-        const responseBrigada = await axios.get('http://tu-api.com/obtener-id-brigada', {
-          numero: this.brigada,
         });
+          
+          const responseVitola = await axios.get('http://127.0.0.1:8000/api/obtener-id-vitola', {
+            params:{
+              nombre: element.vitola
+            }
+          })
+          console.log(responseVitola.data)
+        // if (responseVitola.data.id) {
+        //   this.idVitola = responseVitola.data.id;
+        // } else {
+        //   console.error('Vitola no encontrada');
+        // }
+        // const responseBrigada = await axios.get('http://127.0.0.1:8000/api/obtener-id-brigada', {
+        //   params:{
+        //     numero: 1,
+        //   }
+        // });
+        // console.log(responseBrigada)
+        // if (responseBrigada.data.id) {
+        //   this.idVitola = responseBrigada.data.id;
+        // } else {
+        //   console.error('Vitola no encontrada');
+        // }
 
-        if (responseBrigada.data.id) {
-          this.idVitola = responseBrigada.data.id;
-        } else {
-          console.error('Vitola no encontrada');
-        }
 
 
 
 
-
-
+        
       } catch (error) {
         // Manejar errores aquí
         console.error('Error al enviar los datos:', error);
