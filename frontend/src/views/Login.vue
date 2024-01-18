@@ -15,9 +15,9 @@
           </v-card-title>
           <v-card-text>
             <v-form @submit.prevent="login">
-              <v-row align="center">
+              <v-row>
                 <v-col cols="12">
-                  <v-text-field v-model="username" label="Usuario" prepend-icon="mdi-account" required></v-text-field>
+                  <v-text-field style="color: rgba(165, 42, 42, 0.829);" v-model="username" label="Usuario" prepend-icon="mdi-account" required></v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-text-field v-model="password" 
@@ -48,6 +48,10 @@
 
 <script>
 export default {
+  mounted() {
+    // Emitir evento para indicar que no se debe mostrar el NavBar
+    this.$emit('mostrarNavBarEvent', false);
+  },
   data() {
     return {
       username: '',
