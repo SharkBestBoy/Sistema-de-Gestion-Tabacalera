@@ -40,4 +40,14 @@ class FechaController extends Controller
         return response()->json(['message' => 'Planificación asignada a fechas correctamente']);
     }
 
+    public function getIdFecha($dia, $mes, $anno){
+
+        $fecha_id= Fecha::where('dia', $dia)
+        ->where('mes', $mes)
+        ->where('anno', $anno)
+        ->get();
+        return response()->json(['fecha_id'=>$fecha_id[0]->id]);
+
+    }
+
 };

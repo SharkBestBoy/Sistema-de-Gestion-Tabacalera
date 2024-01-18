@@ -48,12 +48,12 @@ Route::delete('vitolas/{id}', [VitolaController::class, 'destroy']);
 Route::get('vitolasPorCategoria', [VitolaController::class, 'vitolasPorCategoria']);
 
 Route::post('addFecha', [FechaController::class, 'crearFechas']);
+Route::get('fechas/dia={dia}/mes={mes}/anno={anno}', [FechaController::class, 'getIdFecha']);
 
 Route::get('planificacions', [PlanificacionController::class, 'index']);
 Route::post('planificacions', [PlanificacionController::class, 'store']);
 Route::get('planificacions/{planificacion_id}', [PlanificacionController::class, 'calcularPlanificacionDiaria']);
 
-Route::get('fechas', [FechaController::class, 'buscarFecha_ID']);
 
 
 

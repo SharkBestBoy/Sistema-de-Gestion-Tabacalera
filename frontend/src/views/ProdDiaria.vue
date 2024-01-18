@@ -26,31 +26,33 @@
             <br>
             <v-row align="center">
 
-              <v-col cols="7"  >
-                
-                <v-text-field hide-details label=" Cantidad Trabajores de la Brigada" variant="outlined"
-                v-model="cant_trabajadores"
-                type="number"
-                @change="calcularCantEmpleadosRestantes"></v-text-field>
-             
+              <v-col cols="7">
+
+                <v-text-field hide-details label="Cantidad Trabajores de la Brigada" variant="outlined"
+                  v-model="cant_trabajadores" type="number" min="1"
+                  @change="calcularCantEmpleadosRestantes"></v-text-field>
+
               </v-col>
-              <v-col >
+              <v-col>
                 <v-card>
 
-                  <v-card-text><h4>Total de empleados: {{cantEmpleados}} </h4></v-card-text>
-                  <v-card-text><h4>Empleados restantes: {{cantEmpleadosRestantes}} </h4></v-card-text>
+                  <v-card-text>
+                    <h4>Total de empleados: {{ cantEmpleados }} </h4>
+                  </v-card-text>
+                  <v-card-text>
+                    <h4>Empleados restantes: {{ cantEmpleadosRestantes }} </h4>
+                  </v-card-text>
 
                 </v-card>
-                </v-col>
+              </v-col>
             </v-row>
-             
+
             <br>
-            <v-text-field label="Introduzca Cantidad Producida" variant="outlined"
-              v-model="cant_producida"
-              type="number"></v-text-field>
-                <v-container>
-                  <v-btn block rounded="xl" elevation="16" color="success" type="submit">Crear Producción</v-btn>
-                </v-container>
+            <v-text-field label="Introduzca Cantidad Producida" variant="outlined" v-model="cant_producida" type="number"
+              min="1"></v-text-field>
+            <v-container>
+              <v-btn block rounded="xl" elevation="16" color="success" type="submit">Crear Producción</v-btn>
+            </v-container>
           </v-form>
         </v-card>
       </v-col>
@@ -75,18 +77,16 @@
             <v-autocomplete label=" Escriba la brigada" :items="arrayBrigada" v-model="brigada"
               @blur="autoCompletableBrigadas"></v-autocomplete>
             <br>
-            <v-text-field label=" Cantidad Trabajores de la Brigada" variant="outlined"
-              v-model="cant_trabajadores"
+            <v-text-field label=" Cantidad Trabajores de la Brigada" variant="outlined" v-model="cant_trabajadores"
               type="number"></v-text-field>
             <br>
-            <v-text-field label="Introduzca Cantidad Producida" variant="outlined"
-              v-model="cant_producida"
+            <v-text-field label="Introduzca Cantidad Producida" variant="outlined" v-model="cant_producida"
               type="number"></v-text-field>
             <br>
             <v-container>
 
-            <v-btn black color="success" class="ml-15" type="submit">Editar Producción</v-btn>
-            <v-btn black color="warning" class="ml-15" @click="cancelarEditar">Cancelar</v-btn>
+              <v-btn black color="success" class="ml-15" type="submit">Editar Producción</v-btn>
+              <v-btn black color="warning" class="ml-15" @click="cancelarEditar">Cancelar</v-btn>
             </v-container>
 
           </v-form>
@@ -112,20 +112,20 @@
           <v-card-text>
             <v-chip class="ma-2" color="green" label>
               <v-icon start icon="mdi-label"></v-icon>
-              {{ item.Categoria }}
+              Categoría:{{ item.Categoria }}
             </v-chip>
             <ul>
               <li>
-                {{ item.vitola }}
+                <strong>Vitola:</strong> {{ item.vitola }}
               </li>
               <li>
-                {{ item.brigada }}
+                <strong>Brigada #:</strong> {{ item.brigada }}
               </li>
               <li>
-                {{ item.cant_trabajadores }}
+                <strong>Cantidad de Trabajadores:</strong> {{ item.cant_trabajadores }}
               </li>
               <li>
-                {{ item.cant_producida }}
+                <strong>Cantidad Producida:</strong> {{ item.cant_producida }}
               </li>
             </ul>
             <br>
@@ -138,65 +138,51 @@
       </v-col>
 
 
-       <!--Aqui todo relacionado con las estadisticas--> 
-       <v-col md6>
+      <!--Aqui todo relacionado con las estadisticas-->
+      <v-col md6>
         <v-card>
           <v-card-text>
-           <h1>Estadísticas</h1>
-          </v-card-text> 
-         <div>
-          <v-divider
-          :thickness="8"
-          class="border-opacity-50"
-            color="brown"
-  >       </v-divider>
-         </div>
-         <v-card-text>
-         <ul>
-          <li>
-           <h3>Cantidad de producciones:</h3>
-          </li>
-          <li>
-            <h3>Cantidad total producida en el día:</h3>
-          </li>
-          <li>
-            <h3>Porcentaje del cumplimiento con respecto al plan mensual:</h3>
-          </li>
-         </ul><br>
-               
-         <v-btn black color="success">Calcular</v-btn>
-         <v-btn black color="warning" class="ml-10">Ver datos anteriores</v-btn>
-        </v-card-text>
-          
-           </v-card>   
+            <h1>Estadísticas</h1>
+          </v-card-text>
+          <div>
+            <v-divider :thickness="8" class="border-opacity-50" color="brown"> </v-divider>
+          </div>
+          <v-card-text>
+            <ul>
+              <li>
+                <h3>Cantidad de producciones:</h3>
+              </li>
+              <li>
+                <h3>Cantidad total producida en el día:</h3>
+              </li>
+              <li>
+                <h3>Porcentaje del cumplimiento con respecto al plan mensual:</h3>
+              </li>
+            </ul><br>
 
-       </v-col>
+            <v-btn black color="success">Calcular</v-btn>
+            <v-btn black color="warning" class="ml-10">Ver datos anteriores</v-btn>
+          </v-card-text>
 
-       <v-divider
-       :thickness="8"
-       class="border-opacity-50"
-         color="brown"
->       </v-divider><br>
-        </v-row>
-      <!--Snackbar que muestra los mensajes cuando se realizan las operaciones-->
-        <v-snackbar
-        v-model="snackbar"
-      >
-        {{ mensaje }}
-  
-        <template v-slot:actions>
-          <v-btn
-            color="pink"
-            variant="text"
-            @click="snackbar = false"
-          >
-            Cerrar
-          </v-btn>
-        </template>
-      </v-snackbar>
-        
-     <v-btn black color="success">Agragar producciones del Dia</v-btn>   
-    </v-container>
+        </v-card>
+
+      </v-col>
+
+      <v-divider :thickness="8" class="border-opacity-50" color="brown"> </v-divider><br>
+    </v-row>
+    <!--Snackbar que muestra los mensajes cuando se realizan las operaciones-->
+    <v-snackbar v-model="snackbar">
+      {{ mensaje }}
+
+      <template v-slot:actions>
+        <v-btn color="pink" variant="text" @click="snackbar = false">
+          Cerrar
+        </v-btn>
+      </template>
+    </v-snackbar>
+
+    <v-btn black color="success">Agragar producciones del Dia</v-btn>
+  </v-container>
 </template>
 <!--Aqui estan los scripts(en la seccion data estan los datos y en methods estan todos los metodos)-->
 <script>
@@ -210,7 +196,7 @@ export default {
         { id: 1, Categoria: 'Categoria#1', vitola: 'vitola', brigada: 'brigada', cant_trabajadores: 'cant trabajadores', cant_producida: 'cant producida' },
         { id: 2, Categoria: 'Categoria#2', vitola: 'vitola', brigada: 'brigada', cant_trabajadores: 'cant trabajadores', cant_producida: 'cant producida' }
       ],
-
+      fechaID: '',
       Categoria: '',
       vitola: '',
       brigada: '',
@@ -222,16 +208,29 @@ export default {
       indexProduccion: '',
       arrayNombreVitola: '',
       arrayBrigada: '',
-      cantEmpleados:0,
-      cantEmpleadosRestantes:0,
-      cantEmpleadosAgregados: 0
+      cantEmpleados: '',
+      cantEmpleadosRestantes: '',
     }
   },
   // HACER EN LA API METODO PARA BUSCAR TODAS LAS CATEGORIAS Q HAY PARA LLAMARLO, Y TAMBIEN HACER EL DE OBTENER NOMBRES D VITOLAS PASANDOLE LA CATEGORIA
   created() {
     this.autoCompletableBrigadas()
+    this.obtenerFecha()
   },
   methods: {
+    async obtenerFecha() {
+      try {
+
+        const fecha = new Date()
+        const anno = fecha.getFullYear()
+        const mes = fecha.getMonth() + 1
+        const dia = fecha.getDate()
+        const response = await axios.get(`http://127.0.0.1:8000/api/fechas/dia=${dia}/mes=${mes}/anno=${anno}`)
+        this.fechaID = response.data.fecha_id
+      } catch (error) {
+        console.error('Error al obtener la fecha', error);
+      }
+    },
     async autoCompletableNombreVitola() {
       try {
 
@@ -244,7 +243,7 @@ export default {
           this.arrayNombreVitola = response.data.vitolas;
         }
       } catch (error) {
-        console.error('Error al obtener las vitolas:', error);
+        console.error('Error al obtener las vitolas', error);
       }
     },
 
@@ -256,17 +255,23 @@ export default {
         this.arrayBrigada = response.data.brigadas.map(brigadas => brigadas.numero);
 
       } catch (error) {
-        console.error('Error al obtener las vitolas:', error);
+        console.error('Error al obtener las brigadas', error);
       }
     },
 
-    async mostrarCantidadEmpleados(){
-      const numeroBrigada= this.brigada;
-      const response = await axios.get(`http://127.0.0.1:8000/api/cant-empleados-brigada/${numeroBrigada}`);
-      this.cantEmpleados=response.data;
-      
+    async mostrarCantidadEmpleados() {
+      try {
 
-
+        if (this.brigada !== null) {
+          console.log(this.brigada)
+          let numeroBrigada = this.brigada;
+          let response = await axios.get(`http://127.0.0.1:8000/api/cant-empleados-brigada/${numeroBrigada}`);
+          this.cantEmpleados = response.data;
+          this.calcularCantEmpleadosRestantes()
+        }
+      } catch (error) {
+        console.error('Error al obtener la cantidad de empleados', error);
+      }
     },
 
 
@@ -276,21 +281,27 @@ export default {
         this.snackbar = true
         this.mensaje = 'Llena todos los campos!'
       } else {
-        this.listaProducciones.push({
-          id: Date.now(),
-          Categoria: this.Categoria,
-          vitola: this.vitola,
-          brigada: this.brigada,
-          cant_trabajadores: this.cant_trabajadores,
-          cant_producida: this.cant_producida
-        })
-        this.Categoria = '',
-          this.vitola = '',
-          this.brigada = '',
+        if (this.cantEmpleadosRestantes < 0) {
+          this.snackbar = true
+          this.mensaje = 'Sobrepasó la cantidad de trabajadores restantes de esa brigada!'
+        } else {
+          this.listaProducciones.push({
+            Categoria: this.Categoria,
+            vitola: this.vitola,
+            brigada: this.brigada,
+            cant_trabajadores: this.cant_trabajadores,
+            cant_producida: this.cant_producida
+          })
+          this.Categoria = ''
+          this.vitola = ''
+          this.brigada = ''
           this.cant_trabajadores = ''
-        this.cant_producida = ''
-        this.snackbar = true
-        this.mensaje = 'Producción creada con exito!'
+          this.cant_producida = ''
+          this.snackbar = true
+          this.mensaje = 'Producción creada con exito!'
+          this.cantEmpleados = ''
+          this.cantEmpleadosRestantes = ''
+        }
       }
     },
     eliminarProduccion(id) {
@@ -322,7 +333,7 @@ export default {
       this.snackbar = true
       this.mensaje = 'Se ha editado correctamente la producción!'
     },
-    cancelarEditar(){
+    cancelarEditar() {
       this.formAgregar = true
       this.Categoria = ''
       this.vitola = ''
@@ -331,11 +342,20 @@ export default {
       this.cant_producida = ''
       this.snackbar = true
       this.mensaje = 'Se ha cancelado la edición !'
+    },
+    calcularCantEmpleadosRestantes() {
+      let asignados = 0
+      for (let i = 0; i < this.listaProducciones.length; i++) {
+        if (this.listaProducciones[i].brigada === this.brigada) {
+          asignados += Number(this.listaProducciones[i].cant_trabajadores)
+        }
+      }
+      // No funciona
+      asignados += Number(this.cant_trabajadores)
+      return this.cantEmpleadosRestantes = this.cantEmpleados - asignados
     }
   },
-   calcularCantEmpleadosRestantes(){
-    this.cantEmpleadosRestantes=this.cantEmpleados-this.cantEmpleadosAgregados
-  }
+
 
 }
 
