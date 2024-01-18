@@ -97,45 +97,65 @@
 
 
 
-      <!--Aqui se encuentra todo lo relacionado con las producciones que se crean-->
-      <v-col md6>
-
-        <v-card class="mb-3" v-for="(item, index) in listaProducciones" :key="index">
-          <v-card-text>
-            <h1>Producción Creada</h1>
-          </v-card-text>
-
+       <!--Aqui se encuentra todo lo relacionado con las producciones que se crean-->
+       
+       <v-col md6>
+    
+        <v-card-text>
+          <h1>Lista de Producciones</h1>
           <div>
-            <v-divider :thickness="8" class="border-opacity-50" color="brown"> </v-divider>
-          </div>
-
-          <v-card-text>
-            <v-chip class="ma-2" color="green" label>
-              <v-icon start icon="mdi-label"></v-icon>
-              Categoría:{{ item.Categoria }}
-            </v-chip>
-            <ul>
-              <li>
-                <strong>Vitola:</strong> {{ item.vitola }}
-              </li>
-              <li>
-                <strong>Brigada #:</strong> {{ item.brigada }}
-              </li>
-              <li>
-                <strong>Cantidad de Trabajadores:</strong> {{ item.cant_trabajadores }}
-              </li>
-              <li>
-                <strong>Cantidad Producida:</strong> {{ item.cant_producida }}
-              </li>
-            </ul>
-            <br>
-            <v-btn color="green" @click="editarProduccion(index)">Editar</v-btn>
-            <v-btn color="error" @click="eliminarProduccion(item.id)" class="ml-10">Eliminar</v-btn>
-          </v-card-text>
-
+          <v-divider
+          :thickness="8"
+          class="border-opacity-50"
+          color="success"
+          style="margin-top: -5px;"
+  >       </v-divider>
+         </div>
+        </v-card-text>
+        <v-container>
+         <v-card>
+        <v-virtual-scroll
+         :items="Array.from({length: 100}).map((_, index) => index)"
+         :item-height="50"
+         height="548"
+         
+         >
+       
+        <v-card class="mb-3" v-for="(item,index) in listaProducciones" :key="index">
+        <v-card-text>
+            <v-chip
+          class="ma-2"
+          color="green"
+          label
+    >
+           <v-icon start icon="mdi-label"></v-icon>
+           Categoría:{{ item.Categoria }}
+          </v-chip>
+         <ul>
+            <li>
+              <strong>Vitola:</strong>  {{ item.vitola }}
+            </li>
+            <li>
+              <strong>Brigada #:</strong>  {{ item.brigada }}
+            </li>
+            <li>
+              <strong>Cantidad de Trabajadores:</strong>   {{ item.cant_trabajadores }}
+            </li>
+            <li>
+               {{ item.cant_producida }}
+            </li>
+         </ul>
+         <br>
+          <v-btn color="green" @click="editarProduccion(index)">Editar</v-btn>
+          <v-btn color="error" @click="eliminarProduccion(item.id)" class="ml-10" >Eliminar</v-btn>
+          </v-card-text> 
+        
+      
         </v-card>
-
-      </v-col>
+      </v-virtual-scroll>
+        </v-card>
+      </v-container>
+       </v-col>
 
 
       <!--Aqui todo relacionado con las estadisticas-->

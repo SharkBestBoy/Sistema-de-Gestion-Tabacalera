@@ -6,21 +6,30 @@ const routes = [
     path: '/',
     name: 'login',
     component: Login
+   
   },
   {
-    path: '/about',
-    name: 'about',
+    path: '/Mostrar',
+    name: 'mostrar',
 
     component: function () {
-      return import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+      return import(/* webpackChunkName: "about" */ '../views/Mostrar.vue')
     }
   },
+ 
   {
     path: '/add',
     name: 'login',
     component: Login
   },
+  {
+    path: '/AddEmpleado',
+    name: 'AddEmpleado',
 
+    component: function () {
+      return import(/* webpackChunkName: "about" */ '../views/AddEmpleado')
+    }
+  },
 
   {
     path:'/ProdDiaria',
@@ -30,7 +39,15 @@ const routes = [
       return import(/* webpackChunkName: "produccionDiaria" */ '../views/ProdDiaria.vue')
     }
     
-  }
+  },
+  {
+    path: '/Probar',
+    name: 'probar',
+
+    component: function () {
+      return import(/* webpackChunkName: "about" */ '../views/Probar')
+    }
+  },
  
     
   
