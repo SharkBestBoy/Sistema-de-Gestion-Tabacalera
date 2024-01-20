@@ -71,7 +71,7 @@
             <v-autocomplete label=" Escriba la categoria" :items="['IX', 'VIII', 'VII']" v-model="Categoria"
               @blur="autoCompletableNombreVitola"></v-autocomplete>
             <br>
-            <v-autocomplete label="Escriba el nombre de la  vitola" :items="arrayNombreVitola"
+            <v-autocomplete label="Escriba el nombre de la vitola" :items="arrayNombreVitola"
               v-model="vitola"></v-autocomplete>
             <br>
             <v-autocomplete label=" Escriba la brigada" :items="arrayBrigada" v-model="brigada"
@@ -206,7 +206,9 @@ export default {
       ],
       fechaID: '',
       Categoria: '',
-      vitola: '',
+      vitolaSelected: '',
+      arrayVitolas: '',
+      arrayNombreVitola: '',
       brigada: '',
       cant_trabajadores: '',
       cant_producida: '',
@@ -214,7 +216,6 @@ export default {
       mensaje: '',
       formAgregar: true,
       indexProduccion: '',
-      arrayNombreVitola: '',
       arrayBrigada: '',
       cantEmpleados: '',
       cantEmpleadosRestantes: '',
@@ -225,6 +226,7 @@ export default {
   created() {
     this.autoCompletableBrigadas()
     this.obtenerFecha()
+    this.obtenerVitolas()
   },
   methods: {
     async obtenerFecha() {
@@ -240,20 +242,39 @@ export default {
         console.error('Error al obtener la fecha', error);
       }
     },
-    async autoCompletableNombreVitola() {
+    async obtenerVitolas() {
       try {
 
-        if (this.Categoria !== '') {
-          const response = await axios.get(`http://127.0.0.1:8000/api/vitolasPorCategoria`, {
-            params: {
-              categoria: this.Categoria,
-            }
-          });
-          this.arrayNombreVitola = response.data.vitolas;
-        }
+        const response = await axios.get('http://127.0.0.1:8000/api/vitolas')
+        
+        this.arrayNombreVitola = response.data.vitolas[0].nombre
+console.log(this.arrayNombreVitola)
       } catch (error) {
-        console.error('Error al obtener las vitolas', error);
+        console.error('Error al obtener las vitolasssssssssssssss', error);
       }
+    },
+
+    async autoCompletableNombreVitola() {
+      // try {
+
+      //   if (this.Categoria !== '') {
+
+
+      //   }
+
+
+
+      //   if (this.Categoria !== '') {
+      //     const response = await axios.get(`http://127.0.0.1:8000/api/vitolasPorCategoria`, {
+      //       params: {
+      //         categoria: this.Categoria,
+      //       }
+      //     });
+      //     this.arrayNombreVitola = [{ nombre: response.data.vitolas }]
+      //   }
+      // } catch (error) {
+      //   console.error('Error al obtener las vitolas', error);
+      // }
     },
 
     async autoCompletableBrigadas() {
@@ -286,7 +307,7 @@ export default {
 
 
     agregarProduccion() {
-      if (this.Categoria === '' || this.vitola === '' || this.brigada === '' || this.cant_trabajadores === '' || this.cant_producida === '') {
+      if (this.Categoria === '' || this.vitolaSelected === '' || this.brigada === '' || this.cant_trabajadores === '' || this.cant_producida === '') {
         this.snackbar = true
         this.mensaje = 'Llena todos los campos!'
       } else {
@@ -296,13 +317,13 @@ export default {
         } else {
           this.listaProducciones.push({
             Categoria: this.Categoria,
-            vitola: this.vitola,
+            vitola: this.vitolaSelected,
             brigada: this.brigada,
             cant_trabajadores: this.cant_trabajadores,
             cant_producida: this.cant_producida
           })
           this.Categoria = ''
-          this.vitola = ''
+          this.vitolaSelected = ''
           this.brigada = ''
           this.cant_trabajadores = ''
           this.cant_producida = ''
@@ -322,7 +343,7 @@ export default {
     editarProduccion(index) {
       this.formAgregar = false
       this.Categoria = this.listaProducciones[index].Categoria
-      this.vitola = this.listaProducciones[index].vitola
+      this.vitolaSelected = this.listaProducciones[index].vitola
       this.brigada = this.listaProducciones[index].brigada
       this.cant_trabajadores = this.listaProducciones[index].cant_trabajadores
       this.cant_producida = this.listaProducciones[index].cant_producida
@@ -330,13 +351,13 @@ export default {
     },
     editarProduccionA() {
       this.listaProducciones[this.indexProduccion].Categoria = this.Categoria
-      this.listaProducciones[this.indexProduccion].vitola = this.vitola
+      this.listaProducciones[this.indexProduccion].vitola = this.vitolaSelected
       this.listaProducciones[this.indexProduccion].brigada = this.brigada
       this.listaProducciones[this.indexProduccion].cant_trabajadores = this.cant_trabajadores
       this.listaProducciones[this.indexProduccion].cant_producida = this.cant_producida
       this.formAgregar = true
       this.Categoria = ''
-      this.vitola = ''
+      this.vitolaSelected = ''
       this.brigada = ''
       this.cant_trabajadores = ''
       this.cant_producida = ''
@@ -346,7 +367,7 @@ export default {
     cancelarEditar() {
       this.formAgregar = true
       this.Categoria = ''
-      this.vitola = ''
+      this.vitolaSelected = ''
       this.brigada = ''
       this.cant_trabajadores = ''
       this.cant_producida = ''
@@ -378,13 +399,13 @@ export default {
 
 
         });
-          
-          const responseVitola = await axios.get('http://127.0.0.1:8000/api/obtener-id-vitola', {
-            params:{
-              nombre: element.vitola
-            }
-          })
-          console.log(responseVitola.data)
+
+        const responseVitola = await axios.get('http://127.0.0.1:8000/api/obtener-id-vitola', {
+          params: {
+            nombre: element.vitola
+          }
+        })
+        console.log(responseVitola.data)
         // if (responseVitola.data.id) {
         //   this.idVitola = responseVitola.data.id;
         // } else {
@@ -406,7 +427,7 @@ export default {
 
 
 
-        
+
       } catch (error) {
         // Manejar errores aquí
         console.error('Error al enviar los datos:', error);

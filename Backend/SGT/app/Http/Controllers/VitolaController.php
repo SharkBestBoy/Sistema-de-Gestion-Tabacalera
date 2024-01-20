@@ -37,8 +37,9 @@ class VitolaController extends Controller
     public function vitolasPorCategoria(Request $request)
     {
         try {
+            $categoria = $request->categoria;
 
-            $vitolas = Vitola::where('categoria', $request->categoria)->pluck('nombre')->toArray();
+            $vitolas = Vitola::where('categoria', $categoria)->select('id', 'nombre')->get();
 
             return response()->json(['vitolas' => $vitolas]);
         } catch (\Exception $e) {

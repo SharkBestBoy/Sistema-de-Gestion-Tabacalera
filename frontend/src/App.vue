@@ -1,9 +1,12 @@
 <template>
     <v-app>
     <NavBar v-if="mostrarNavBar"></NavBar>
-    <v-content>
-      <router-view></router-view>
-    </v-content>
+    
+    <v-container>
+      <v-content>
+        <router-view></router-view>
+      </v-content>
+    </v-container>
   </v-app>
 </template>
 

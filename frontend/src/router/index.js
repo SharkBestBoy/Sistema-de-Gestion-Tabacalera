@@ -13,8 +13,6 @@ const routes = [
     component: Login
    
   },
-  
-
     {
     path: '/p',
     name: 'Principal',
@@ -32,19 +30,9 @@ const routes = [
     component: Planificacion,
   },
   {
-    path: '/Prueba',
-    name: 'prueba',
-  },
-  {
     path: '/gb',
     name: 'gestionarBrigada',
     component: GestionarBrigada,
-  },
-  
-  {
-    path: '/pd',
-    name: 'prodDiaria',
-    component: ProdDiaria,
   },
   {
     path: '/AddEmpleado',
@@ -54,16 +42,6 @@ const routes = [
       return import(/* webpackChunkName: "about" */ '../views/AddEmpleado')
     }
   },
-
-  {
-    path:'/ProdDiaria',
-    name: 'prodDiaria',
-
-    component: function () {
-      return import(/* webpackChunkName: "produccionDiaria" */ '../views/ProdDiaria.vue')
-    }
-    
-  },
   {
     path: '/Probar',
     name: 'probar',
@@ -72,17 +50,10 @@ const routes = [
       return import(/* webpackChunkName: "about" */ '../views/Probar')
     }
   },
- 
-    
-  
 {
     path: '/pl',
     name: 'planificacion',
     component: Planificacion,
-  },
-  {
-    path: '/Prueba',
-    name: 'prueba',
   },
   {
     path: '/gb',

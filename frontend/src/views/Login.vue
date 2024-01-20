@@ -17,7 +17,7 @@
             <v-form @submit.prevent="login">
               <v-row>
                 <v-col cols="12">
-                  <v-text-field style="color: rgba(165, 42, 42, 0.829);" v-model="username" label="Usuario" prepend-icon="mdi-account" required></v-text-field>
+                  <v-text-field v-model="username" label="Usuario" prepend-icon="mdi-account" required></v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-text-field v-model="password" 
