@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('produccions', function (Blueprint $table) {
             $table->id();
-            $table->integer('cantidad');
+            $table->integer('cant_producida');
+            $table->integer('cant_trabajadores');
             $table->foreignId('vitola_id')
             ->references('id')
             ->on('vitolas')

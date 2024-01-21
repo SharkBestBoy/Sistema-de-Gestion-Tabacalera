@@ -20,22 +20,22 @@ class EmpleadoController extends Controller
         
 
             $data = $request->validate([
+                'ci' => 'required',
                 'nombre' => 'required',
                 'apellidos' => 'required',
-                'direccionLocal' => 'required',
+                'direccionLocal' => 'required',  
             ]);
             return Empleado::create($data);
             
     
     }
 
-    public function destroy($id)
+    public function destroy($ci)
     {
         try {
-
-            $empleado = Empleado::findOrFail($id);
+            $empleado = Empleado::where('ci', $ci)->first();
             $empleado->delete();
-            return response()->json(['message' => 'Empleado ' . $id . ' eliminada']);
+            return response()->json(['message' => 'Empleado ' . $ci . ' eliminada']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al eliminar el empleado'], 500);
         }

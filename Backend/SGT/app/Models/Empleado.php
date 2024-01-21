@@ -10,6 +10,7 @@ class Empleado extends Model
     use HasFactory;
     public $table = 'empleados';
     protected $fillable = [
+        'ci',
         'nombre',
         'apellidos',
         'direccionLocal',

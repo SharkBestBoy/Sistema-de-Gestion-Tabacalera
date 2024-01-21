@@ -10,8 +10,8 @@ class FechaController extends Controller
 {
     public function crearFechas()
     {
-        $fechaInicio = Carbon::create(2023, 1, 1); // Fecha de inicio
-        $fechaFin = Carbon::create(2023, 12, 31); // Fecha de fin
+        $fechaInicio = Carbon::create(2024, 1, 1); // Fecha de inicio
+        $fechaFin = Carbon::create(2024, 12, 31); // Fecha de fin
 
         $fechas = [];
         for ($fecha = $fechaInicio; $fecha->lte($fechaFin); $fecha->addDay()) {

@@ -1,5 +1,5 @@
 <template>
-  <v-data-table :headers="headers" :items="desserts" :sort-by="[{ key: 'calories', order: 'asc' }]">
+  <v-data-table :headers="headers" :items="desserts">
     <template v-slot:top>
       <v-toolbar color="brown" flat>
         <v-toolbar-title>Lista de Empleados</v-toolbar-title>
@@ -21,7 +21,7 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="8" md="8">
-                    <v-text-field v-model="editedItem.name" label="Nombre del empleado"></v-text-field>
+                    <v-text-field v-model="editedItem.nombre" label="Nombre del empleado"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="12" md="12">
                     <v-text-field v-model="editedItem.apellidos" label="Apellidos del empleado"></v-text-field>
@@ -30,7 +30,7 @@
                     <v-text-field v-model="editedItem.ci" label="CI"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="10" md="10">
-                    <v-text-field v-model="editedItem.direccion" label="Direccion local "></v-text-field>
+                    <v-text-field v-model="editedItem.direccionLocal" label="Direccion local "></v-text-field>
                   </v-col>
 
                 </v-row>
@@ -88,6 +88,8 @@
   </v-snackbar>
 </template>
 <script>
+import axios from 'axios'
+
 export default {
   data: () => ({
     snackbar: false,
@@ -101,25 +103,24 @@ export default {
         sortable: false,
         key: 'ci',
       },
-      { title: 'Nombre del Empleado', key: 'name' },
+      { title: 'Nombre del Empleado', key: 'nombre' },
       { title: 'Apellidos del Empleado', key: 'apellidos' },
-      { title: 'Direccion Local', key: 'direccion' },
+      { title: 'Direccion Local', key: 'direccionLocal' },
       { title: 'Actions', key: 'actions', sortable: false },
     ],
     desserts: [],
     editedIndex: -1,
     editedItem: {
       ci: '',
-      name: '',
+      nombre: '',
       apellidos: '',
-
-      direccion: ''
+      direccionLocal: ''
     },
     defaultItem: {
       ci: '',
-      name: '',
+      nombre: '',
       apellidos: '',
-      direccion: '',
+      direccionLocal: '',
 
     },
   }),
@@ -144,18 +145,20 @@ export default {
   },
 
   methods: {
-    initialize() {
-      this.desserts = [
-
-      ]
+    async initialize() {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/empleados')
+        console.log(response)
+        this.desserts = response.data.empleados
+      } catch (error) {
+        console.error('Error al obtener los empleados', error)
+      }
     },
 
     editItem(item) {
-
       this.editedIndex = this.desserts.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
-
     },
 
     deleteItem(item) {
@@ -164,9 +167,16 @@ export default {
       this.dialogDelete = true
     },
 
-    deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1)
-      this.closeDelete()
+    async deleteItemConfirm() {
+      try {
+        await axios.delete(`http://127.0.0.1:8000/api/empleados/${this.editedItem.ci}`)
+        this.desserts.splice(this.editedIndex, 1)
+        this.closeDelete()
+        this.snackbar = true
+        this.mensaje = 'Empleado eliminado!'
+      } catch (error) {
+        console.error('Error al eliminar el empleado', error)
+      }
     },
 
     close() {
@@ -185,10 +195,10 @@ export default {
       })
     },
 
-    save() {
+    async save() {
       if (this.editedIndex > -1) {
 
-        if (this.editedItem.ci === '' || this.editedItem.name === '' || this.editedItem.apellidos === '' || this.editedItem.direccion === '') {
+        if (this.editedItem.ci === '' || this.editedItem.nombre === '' || this.editedItem.apellidos === '' || this.editedItem.direccionLocal === '') {
           this.snackbar = true
           this.mensaje = 'Llena todos los campos!'
         } else {
@@ -198,11 +208,11 @@ export default {
 
         }
       } else {
-        if (this.editedItem.ci === '' || this.editedItem.name === '' || this.editedItem.apellidos === '' || this.editedItem.direccion === '') {
+        if (this.editedItem.ci === '' || this.editedItem.nombre === '' || this.editedItem.apellidos === '' || this.editedItem.direccionLocal === '') {
           this.snackbar = true
           this.mensaje = 'Llena todos los campos!'
         } else {
-
+          await axios.post('http://127.0.0.1:8000/api/empleados', this.editedItem)
           this.desserts.push(this.editedItem)
           this.close()
         }

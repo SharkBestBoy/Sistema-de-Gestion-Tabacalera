@@ -25,11 +25,6 @@ const routes = [
     component: ProdDiaria,
   },
   {
-    path: '/pl',
-    name: 'planificacion',
-    component: Planificacion,
-  },
-  {
     path: '/gb',
     name: 'gestionarBrigada',
     component: GestionarBrigada,
@@ -54,11 +49,6 @@ const routes = [
     path: '/pl',
     name: 'planificacion',
     component: Planificacion,
-  },
-  {
-    path: '/gb',
-    name: 'gestionarBrigada',
-    component: GestionarBrigada,
   },
 ];
 

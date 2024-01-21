@@ -21,16 +21,19 @@ class ProduccionController extends Controller
     {
         try {
             $producciones = $request->validate([
-                '*.cantidad' => 'required',
+                '*.cant_producida' => 'required',
+                '*.cant_trabajadores' => 'required',
                 '*.vitola_id' => 'required',
                 '*.brigada_id' => 'required',
                 '*.fecha_id' => 'required',
             ]);
-            
-            return Produccion::createMany($producciones);
+            foreach ($producciones as $produccion) {
+                Produccion::create($produccion);
+            };
+            return "Bien";
         } catch (\Exception $e) {
             // Manejar la excepción de validación aquí
-            return response()->json(['message' => 'Alguno de los IDs proporcionados no existe', $e], 404);
+            return response()->json(['message' => 'Alguno de los IDs proporcionados no existe', 'error' => $e], 404);
         }
     }
 

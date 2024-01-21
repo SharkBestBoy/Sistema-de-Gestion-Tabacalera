@@ -199,10 +199,8 @@ export default {
   data() {
     return {
       listaProducciones: [
-        { id: 1, Categoria: 'Categoria#1', vitola: 'vitola', brigada: 'brigada', cant_trabajadores: 'cant trabajadores', cant_producida: 'cant producida' },
-        { id: 3, Categoria: 'Categoria#1', vitola: 'vitola', brigada: 'brigada', cant_trabajadores: 'cant trabajadores', cant_producida: 'cant producida' },
-        { id: 4, Categoria: 'Categoria#1', vitola: 'vitola', brigada: 'brigada', cant_trabajadores: 'cant trabajadores', cant_producida: 'cant producida' },
-        { id: 2, Categoria: 'Categoria#2', vitola: 'vitola', brigada: 'brigada', cant_trabajadores: 'cant trabajadores', cant_producida: 'cant producida' }
+        { id: 1, Categoria: 'IX', vitola: 'AROMOSOS', brigada: '1', cant_trabajadores: '2', cant_producida: '20' },
+        { id: 2, Categoria: 'IX', vitola: 'AROMOSOS', brigada: '2', cant_trabajadores: '1', cant_producida: '10' },
       ],
       fechaID: '',
       Categoria: '',
@@ -225,7 +223,7 @@ export default {
   },
   created() {
     this.autoCompletableBrigadas()
-    // this.obtenerFecha()
+    this.obtenerFecha()
     this.obtenerVitolas()
   },
   methods: {
@@ -249,7 +247,6 @@ export default {
 
         this.arrayVitolas = response.data.vitolas
         console.log(this.arrayVitolas)
-        console.log(this.arrayVitolas)
 
       } catch (error) {
         console.error('Error al obtener las vitolas', error);
@@ -260,7 +257,7 @@ export default {
       try {
 
         if (this.Categoria !== '') {
-          this.arrayNombreVitola= this.arrayVitolas.filter(vitola=>vitola.categoria===this.Categoria).map(vitola=>vitola.nombre)
+          this.arrayNombreVitola = this.arrayVitolas.filter(vitola => vitola.categoria === this.Categoria).map(vitola => vitola.nombre)
 
           console.log(this.arrayNombreVitola)
         }
@@ -273,8 +270,9 @@ export default {
       try {
 
         const response = await axios.get(`http://127.0.0.1:8000/api/brigadas`);
-        this.arrayBrigadas=response.data.brigadas
+        this.arrayBrigadas = response.data.brigadas
         this.arrayNumeroBrigadas = response.data.brigadas.map(brigadas => brigadas.numero);
+        console.log(this.arrayBrigadas)
 
       } catch (error) {
         console.error('Error al obtener las brigadas', error);
@@ -387,40 +385,33 @@ export default {
 
     async guardarProduccion() {
       try {
-        let vitola_id, brigada_id, cant_trabajadores, cant_producida, fecha_id
-
+        let vitola_id, brigada_id
+        let produccionesArray = []
         this.listaProducciones.forEach(element => {
+          console.log(this.listaProducciones)
 
-          const vitolaEncontrada = this.arrayVitolas.find(vitola => vitola.nombre === element.vitola);
+          let vitolaEncontrada = this.arrayVitolas.find(vitola => vitola.nombre === element.vitola);
+          console.log(this.arrayBrigadas)
+          vitola_id = vitolaEncontrada.id
+          let brigadaEncontrada = this.arrayBrigadas.find(brigada => brigada.numero.toString() === element.brigada)
+          console.log(brigadaEncontrada)
+          brigada_id = brigadaEncontrada.id
 
-
-          
+          produccionesArray.push({
+            vitola_id: vitola_id,
+            brigada_id: brigada_id,
+            cant_producida: parseInt(element.cant_producida),
+            cant_trabajadores: parseInt(element.cant_trabajadores),
+            fecha_id: this.fechaID
+          })
 
         });
+        console.log(produccionesArray)
 
- 
-        // if (responseVitola.data.id) {
-        //   this.idVitola = responseVitola.data.id;
-        // } else {
-        //   console.error('Vitola no encontrada');
-        // }
-        // const responseBrigada = await axios.get('http://127.0.0.1:8000/api/obtener-id-brigada', {
-        //   params:{
-        //     numero: 1,
-        //   }
-        // });
-        // console.log(responseBrigada)
-        // if (responseBrigada.data.id) {
-        //   this.idVitola = responseBrigada.data.id;
-        // } else {
-        //   console.error('Vitola no encontrada');
-        // }
-
-
-
-
-
-
+        await axios.post('http://127.0.0.1:8000/api/produccions', produccionesArray)
+        this.snackbar=true
+        this.mensaje='Las producciones se guardaron correctamente'
+        this.listaProducciones=[]
       } catch (error) {
         // Manejar errores aquí
         console.error('Error al enviar los datos:', error);
