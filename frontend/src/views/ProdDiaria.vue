@@ -19,9 +19,9 @@
               @blur="autoCompletableNombreVitola"></v-autocomplete>
             <br>
             <v-autocomplete label="Escriba el nombre de la vitola" :items="arrayNombreVitola"
-              v-model="vitola"></v-autocomplete>
+              v-model="vitolaSelected"></v-autocomplete>
             <br>
-            <v-autocomplete label=" Escriba el # de la brigada" :items="arrayBrigada" v-model="brigada"
+            <v-autocomplete label=" Escriba el # de la brigada" :items="arrayNumeroBrigadas" v-model="brigada"
               @blur="mostrarCantidadEmpleados"></v-autocomplete>
             <br>
             <v-row align="center">
@@ -72,9 +72,9 @@
               @blur="autoCompletableNombreVitola"></v-autocomplete>
             <br>
             <v-autocomplete label="Escriba el nombre de la vitola" :items="arrayNombreVitola"
-              v-model="vitola"></v-autocomplete>
+              v-model="vitolaSelected"></v-autocomplete>
             <br>
-            <v-autocomplete label=" Escriba la brigada" :items="arrayBrigada" v-model="brigada"
+            <v-autocomplete label=" Escriba la brigada" :items="arrayNumeroBrigadas" v-model="brigada"
               @blur="autoCompletableBrigadas"></v-autocomplete>
             <br>
             <v-text-field label=" Cantidad Trabajores de la Brigada" variant="outlined" v-model="cant_trabajadores"
@@ -207,25 +207,25 @@ export default {
       fechaID: '',
       Categoria: '',
       vitolaSelected: '',
-      arrayVitolas: '',
-      arrayNombreVitola: '',
+      arrayVitolas: [],
+      arrayNombreVitola: [],
       brigada: '',
+      arrayBrigadas: [],
+      arrayNumeroBrigadas: [],
       cant_trabajadores: '',
       cant_producida: '',
       snackbar: false,
       mensaje: '',
       formAgregar: true,
       indexProduccion: '',
-      arrayBrigada: '',
       cantEmpleados: '',
       cantEmpleadosRestantes: '',
       prodDiariaTotal: ''
     }
   },
-  // HACER EN LA API METODO PARA BUSCAR TODAS LAS CATEGORIAS Q HAY PARA LLAMARLO, Y TAMBIEN HACER EL DE OBTENER NOMBRES D VITOLAS PASANDOLE LA CATEGORIA
   created() {
     this.autoCompletableBrigadas()
-    this.obtenerFecha()
+    // this.obtenerFecha()
     this.obtenerVitolas()
   },
   methods: {
@@ -246,43 +246,35 @@ export default {
       try {
 
         const response = await axios.get('http://127.0.0.1:8000/api/vitolas')
-        
-        this.arrayNombreVitola = response.data.vitolas[0].nombre
-console.log(this.arrayNombreVitola)
+
+        this.arrayVitolas = response.data.vitolas
+        console.log(this.arrayVitolas)
+        console.log(this.arrayVitolas)
+
       } catch (error) {
-        console.error('Error al obtener las vitolasssssssssssssss', error);
+        console.error('Error al obtener las vitolas', error);
       }
     },
 
     async autoCompletableNombreVitola() {
-      // try {
+      try {
 
-      //   if (this.Categoria !== '') {
+        if (this.Categoria !== '') {
+          this.arrayNombreVitola= this.arrayVitolas.filter(vitola=>vitola.categoria===this.Categoria).map(vitola=>vitola.nombre)
 
-
-      //   }
-
-
-
-      //   if (this.Categoria !== '') {
-      //     const response = await axios.get(`http://127.0.0.1:8000/api/vitolasPorCategoria`, {
-      //       params: {
-      //         categoria: this.Categoria,
-      //       }
-      //     });
-      //     this.arrayNombreVitola = [{ nombre: response.data.vitolas }]
-      //   }
-      // } catch (error) {
-      //   console.error('Error al obtener las vitolas', error);
-      // }
+          console.log(this.arrayNombreVitola)
+        }
+      } catch (error) {
+        console.error('Error al obtener las vitolas', error);
+      }
     },
 
     async autoCompletableBrigadas() {
       try {
 
         const response = await axios.get(`http://127.0.0.1:8000/api/brigadas`);
-        console.log(response.data);
-        this.arrayBrigada = response.data.brigadas.map(brigadas => brigadas.numero);
+        this.arrayBrigadas=response.data.brigadas
+        this.arrayNumeroBrigadas = response.data.brigadas.map(brigadas => brigadas.numero);
 
       } catch (error) {
         console.error('Error al obtener las brigadas', error);
@@ -395,17 +387,18 @@ console.log(this.arrayNombreVitola)
 
     async guardarProduccion() {
       try {
+        let vitola_id, brigada_id, cant_trabajadores, cant_producida, fecha_id
+
         this.listaProducciones.forEach(element => {
 
+          const vitolaEncontrada = this.arrayVitolas.find(vitola => vitola.nombre === element.vitola);
+
+
+          
 
         });
 
-        const responseVitola = await axios.get('http://127.0.0.1:8000/api/obtener-id-vitola', {
-          params: {
-            nombre: element.vitola
-          }
-        })
-        console.log(responseVitola.data)
+ 
         // if (responseVitola.data.id) {
         //   this.idVitola = responseVitola.data.id;
         // } else {
