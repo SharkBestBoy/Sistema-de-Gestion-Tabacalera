@@ -17,17 +17,32 @@ class EmpleadoController extends Controller
 
     public function store(Request $request)
     {
-        
 
+
+        $data = $request->validate([
+            'ci' => 'required',
+            'nombre' => 'required',
+            'apellidos' => 'required',
+            'direccionLocal' => 'required',
+        ]);
+        return Empleado::create($data);
+    }
+    public function update(Request $request, $ci)
+    {
+        try {
+
+            $estudiante = Empleado::where('ci',$ci)->first();
             $data = $request->validate([
                 'ci' => 'required',
                 'nombre' => 'required',
                 'apellidos' => 'required',
-                'direccionLocal' => 'required',  
+                'direccionLocal' => 'required',
             ]);
-            return Empleado::create($data);
-            
-    
+            $estudiante->update($request->all());
+            return response()->json(['estudiante' => $estudiante], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al modificar el empleado'], $e);
+        }
     }
 
     public function destroy($ci)
@@ -53,6 +68,18 @@ class EmpleadoController extends Controller
             return response()->json(['error' => 'Error al asignar la brigada'], 500);
         }
     }
+    public function desAsignarBrigada($empleado_id)
+    {
+        try {
+            $empleado = Empleado::findOrFail($empleado_id);
+            $empleado->brigada_id = null;
+            $empleado->save();
+
+            return response()->json(['message' => 'Desasignacion de brigada completada']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al desasignar la brigada'], 500);
+        }
+    }
 
     public function empleadosSinBrigada()
     {
@@ -70,9 +97,10 @@ class EmpleadoController extends Controller
         return response()->json(['empleados' => $empleadosPorBrigada]);
     }
 
-    public function cantEmpleadosBrigada($brigada_id){
+    public function cantEmpleadosBrigada($brigada_id)
+    {
 
-        $cantEmpleados = Empleado::where('brigada_id',$brigada_id)->get()->count();
+        $cantEmpleados = Empleado::where('brigada_id', $brigada_id)->get()->count();
 
         return $cantEmpleados;
     }

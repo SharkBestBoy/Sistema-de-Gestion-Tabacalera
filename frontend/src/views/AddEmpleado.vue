@@ -1,7 +1,7 @@
 <template>
-  <v-data-table :headers="headers" :items="desserts">
-    <template v-slot:top>
-      <v-toolbar color="brown" flat>
+  <v-data-table :headers="headers" :items="desserts" >
+    <template v-slot:top >
+      <v-toolbar color="brown" flat class="rounded-xl" >
         <v-toolbar-title>Lista de Empleados</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
@@ -12,7 +12,7 @@
               Nuevo Empleado
             </v-btn>
           </template>
-          <v-card>
+          <v-card >
             <v-card-title>
               <span class="text-h5">{{ formTitle }}</span>
             </v-card-title>
@@ -96,6 +96,7 @@ export default {
     mensaje: '',
     dialog: false,
     dialogDelete: false,
+    originalCi:'',
     headers: [
       {
         title: 'CI',
@@ -158,6 +159,7 @@ export default {
     editItem(item) {
       this.editedIndex = this.desserts.indexOf(item)
       this.editedItem = Object.assign({}, item)
+      this.originalCi=item.ci
       this.dialog = true
     },
 
@@ -196,26 +198,32 @@ export default {
     },
 
     async save() {
-      if (this.editedIndex > -1) {
+      try {
+        if (this.editedIndex > -1) {
 
-        if (this.editedItem.ci === '' || this.editedItem.nombre === '' || this.editedItem.apellidos === '' || this.editedItem.direccionLocal === '') {
-          this.snackbar = true
-          this.mensaje = 'Llena todos los campos!'
+          if (this.editedItem.ci === '' || this.editedItem.nombre === '' || this.editedItem.apellidos === '' || this.editedItem.direccionLocal === '') {
+            this.snackbar = true
+            this.mensaje = 'Llena todos los campos!'
+          } else {
+
+            const response = await axios.post(`http://127.0.0.1:8000/api/empleados-update/${this.originalCi}`, this.editedItem)
+            console.log(response)
+            Object.assign(this.desserts[this.editedIndex], this.editedItem)
+            this.close()
+
+          }
         } else {
-
-          Object.assign(this.desserts[this.editedIndex], this.editedItem)
-          this.close()
-
+          if (this.editedItem.ci === '' || this.editedItem.nombre === '' || this.editedItem.apellidos === '' || this.editedItem.direccionLocal === '') {
+            this.snackbar = true
+            this.mensaje = 'Llena todos los campos!'
+          } else {
+            await axios.post('http://127.0.0.1:8000/api/empleados', this.editedItem)
+            this.desserts.push(this.editedItem)
+            this.close()
+          }
         }
-      } else {
-        if (this.editedItem.ci === '' || this.editedItem.nombre === '' || this.editedItem.apellidos === '' || this.editedItem.direccionLocal === '') {
-          this.snackbar = true
-          this.mensaje = 'Llena todos los campos!'
-        } else {
-          await axios.post('http://127.0.0.1:8000/api/empleados', this.editedItem)
-          this.desserts.push(this.editedItem)
-          this.close()
-        }
+      } catch (error) {
+        console.error("Error al guardar los datos")
       }
     }
   },

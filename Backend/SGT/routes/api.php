@@ -31,9 +31,13 @@ Route::get('obtener-id-brigada', [BrigadaController::class, 'obtenerIdPorNumero'
 
 Route::get('empleados', [EmpleadoController::class, 'index']);
 Route::post('empleados', [EmpleadoController::class, 'store']);
+Route::post('empleados-update/{ci}', [EmpleadoController::class, 'update']);
 Route::delete('empleados/{ci}', [EmpleadoController::class, 'destroy']);
 Route::post('empleados/brigada_{brigada_id}/empleado_{empleado_id}', [EmpleadoController::class, 'asignarBrigada']);
+Route::post('empleados/empleado_{empleado_id}', [EmpleadoController::class, 'desAsignarBrigada']);
 Route::get('cant-empleados-brigada/{brigada_id}', [EmpleadoController::class, 'cantEmpleadosBrigada']);
+Route::get('empleados-sinBrigada', [EmpleadoController::class, 'empleadosSinBrigada']);
+Route::get('empleados-conBrigada/{brigada_id}', [EmpleadoController::class, 'empleadosPorBrigada']);
 
 Route::get('produccions', [ProduccionController::class, 'index']);
 Route::post('produccions', [ProduccionController::class, 'store']);
