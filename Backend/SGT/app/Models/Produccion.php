@@ -31,7 +31,8 @@ class Produccion extends Model
 
     public function fecha()
     {
-        return $this->belongsTo(Fecha::class);
+        return $this->belongsTo(Fecha::class, 'fecha_id');
     }
+    
 
 }

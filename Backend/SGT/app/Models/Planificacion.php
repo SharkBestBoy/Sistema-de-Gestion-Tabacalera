@@ -13,4 +13,9 @@ class Planificacion extends Model
         'planificacionMensual',
         'diasLaborables'
     ];
+
+    public function fechas()
+    {
+        return $this->hasMany(Fecha::class, 'planificacion_id');
+    }
 }

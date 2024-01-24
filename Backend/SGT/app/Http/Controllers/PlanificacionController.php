@@ -12,33 +12,51 @@ use Illuminate\Validation\ValidationException;
 
 class PlanificacionController extends Controller
 {
+
     public function index()
     {
-        // Obtener todas las fechas con planificaciones
-        $fechasConPlanificacion = Fecha::whereNotNull('planificacion_id')->get();
+        // Obtener todas las planificaciones y ordenarlas por año y mes
+        $planificaciones = Planificacion::all()->sortBy(function ($planificacion) {
+            // Obtener el primer registro de fechas asociadas a la planificación
+            $primeraFecha = $planificacion->fechas->first();
 
-        // Inicializar el array resultante
-        $planificacionesPorMes = [];
+            // Devolver una cadena que representa el año y mes en el formato "YYYYMM"
+            return $primeraFecha->anno . str_pad($primeraFecha->mes, 2, '0', STR_PAD_LEFT);
+        });
 
-        // Agrupar las fechas por mes
-        $fechasAgrupadas = $fechasConPlanificacion->groupBy('mes');
+        $meses = array(
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        );
 
-        // Iterar sobre cada grupo (mes)
-        foreach ($fechasAgrupadas as $mes => $fechas) {
-            // Obtener la planificación asociada (suponiendo que hay una relación)
-            $planificacion = $fechas->first()->planificacion;
+        // Crear un array para almacenar los resultados
+        $resultados = [];
 
-            // Convertir el número de mes a nombre
-            $nombreMes = Carbon::create()->month($mes)->monthName;
+        // Iterar sobre cada planificación y obtener la información requerida
+        foreach ($planificaciones as $planificacion) {
+            // Obtener el primer registro de fechas asociadas a la planificación
+            $primeraFecha = $planificacion->fechas->first();
 
-            // Agregar al array resultante
-            $planificacionesPorMes[] = [
-                $nombreMes => $planificacion->planificacionMensual
+            // Obtener el nombre del mes
+            $fecha = Carbon::createFromDate(null, $primeraFecha->mes, null);
+
+            $nombreMes = $meses[$fecha->format('n') - 1];
+            $infoPlanificacion = [
+                'id' => $planificacion->id,
+                'mes' => $nombreMes,
+                'anno' => $primeraFecha->anno,
+                'planificacion' => $planificacion->planificacionMensual,
+                'diasLaborables' => $planificacion->diasLaborables,
             ];
+
+            // Agregar la información al array de resultados
+            $resultados[] = $infoPlanificacion;
         }
 
-        return response()->json(['planificaciones' => $planificacionesPorMes]);
+        // Devolver el resultado como JSON
+        return response()->json(['planificaciones' => $resultados]);
     }
+
 
     public function store(Request $request)
     {
@@ -68,8 +86,6 @@ class PlanificacionController extends Controller
         }
     }
 
-
- 
     public function calcularPlanificacionDiaria($planificacion_id)
     {
         // Obtener la planificación por su ID
@@ -84,10 +100,27 @@ class PlanificacionController extends Controller
             $planificacionDiaria = number_format($planificacionDiaria, 0);
 
             // Devolver la planificación diaria
-            return response()->json(['planificacionDiaria' => $planificacionDiaria]);
+            return $planificacionDiaria;
+            // return response()->json(['planificacionDiaria' => $planificacionDiaria]);
         } else {
             // Si los días laborables son cero, devolver un mensaje de error
             return response()->json(['error' => 'Los días laborables deben ser mayores a cero']);
+        }
+    }
+
+    public function verificarPlanificacion($mes, $anno)
+    {
+        // Buscar una planificación para el mes y año dados
+        $planificacion = Planificacion::whereHas('fechas', function ($query) use ($mes, $anno) {
+            $query->where('mes', $mes)->where('anno', $anno);
+        })->first();
+
+        if ($planificacion) {
+            // Hay una planificación para el mes y año dados
+            return response()->json(['existe' => true, 'id' => $planificacion->id, 'mensaje' => 'Hay una planificación para el mes y año dados']);
+        } else {
+            // No hay una planificación para el mes y año dados
+            return response()->json(['existe' => false, 'mensaje' => 'No hay una planificación para el mes y año dados']);
         }
     }
 }

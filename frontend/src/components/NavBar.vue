@@ -6,7 +6,8 @@
       :style="{ color: 'white', fontStyle: 'italic', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)', textAlign: 'center', margin: '0 ', fontSize: '24px', fontWeight: 'bold', }">Sistema
       de Gestión Tabacalera | Tabacuba</v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-btn class="headline" :style="{ color: 'white', fontStyle: 'italic' }" rounded="xl" size="large">
+    <v-btn class="headline" :style="{ color: 'white', fontStyle: 'italic' }" rounded="xl" size="large"
+      @click="logoutUser">
       <v-icon left>mdi-logout</v-icon>
     </v-btn>
   </v-toolbar>
@@ -25,10 +26,8 @@
               <template v-slot:activator="{ props }">
                 <v-list-item v-bind="props" title="Producción"></v-list-item>
               </template>
-                  <v-list-item title="Agregar produccion" 
-                  @click="cambiarRuta"
-                  prepend-icon="mdi-plus-outline">
-                  </v-list-item>
+              <v-list-item title="Agregar produccion" @click="cambiarRuta" prepend-icon="mdi-plus-outline">
+              </v-list-item>
 
             </v-list-group>
 
@@ -37,8 +36,8 @@
                 <v-list-item v-bind="props" title="Brigadas"></v-list-item>
               </template>
 
-              <v-list-item v-for="([title, icon], i) in brigada" :key="i" :value="title" :title="title"
-                :prepend-icon="icon"></v-list-item>
+              <v-list-item title="Gestionar brigada" @click="goToGestionarBrigada" prepend-icon="mdi-plus-outline">
+              </v-list-item>
             </v-list-group>
 
             <v-list-group prepend-icon='mdi-calendar-multiselect' value="Planificación">
@@ -65,7 +64,7 @@
                 </v-col>
 
                 <v-col cols="auto">
-                  <v-btn density="comfortable" color="white">Gestionar Empleado</v-btn>
+                  <v-btn @click="goToGestionarEmpleado" density="comfortable" color="white">Gestionar Empleado</v-btn>
                 </v-col>
 
                 <v-col cols="auto">
@@ -93,6 +92,9 @@
 
 
 <script>
+import axios from 'axios';
+import authService from '@/services/authService'; // Ajusta la ruta según tu estructura de archivos
+
 export default {
   data() {
     return {
@@ -127,15 +129,29 @@ export default {
     },
   },
   methods: {
+    logoutUser() {
+      authService.logout(); // Llamada a la función logout del servicio de autenticación
+      this.$router.push('/login'); // Redirige al usuario a la página de inicio de sesión
+
+    },
     actualizarMostrarNavBar(valor) {
       this.mostrarNavBar = valor;
     },
     goBack() {
       this.drawer = false;
     },
-    cambiarRuta(){
+    cambiarRuta() {
       this.$router.push("pd")
+    },
+    goToGestionarEmpleado() {
+      this.$router.push("AddEmpleado")
+
+    },
+    goToGestionarBrigada() {
+      this.$router.push("gb")
+
     }
+
 
   },
 };

@@ -198,10 +198,7 @@ export default {
 
   data() {
     return {
-      listaProducciones: [
-        { id: 1, Categoria: 'IX', vitola: 'AROMOSOS', brigada: '1', cant_trabajadores: '2', cant_producida: '20' },
-        { id: 2, Categoria: 'IX', vitola: 'AROMOSOS', brigada: '2', cant_trabajadores: '1', cant_producida: '10' },
-      ],
+      listaProducciones: [],
       fechaID: '',
       Categoria: '',
       vitolaSelected: '',
@@ -236,6 +233,7 @@ export default {
         const dia = fecha.getDate()
         const response = await axios.get(`http://127.0.0.1:8000/api/fechas/dia=${dia}/mes=${mes}/anno=${anno}`)
         this.fechaID = response.data.fecha_id
+        
       } catch (error) {
         console.error('Error al obtener la fecha', error);
       }
@@ -287,6 +285,8 @@ export default {
           let numeroBrigada = this.brigada;
           const response = await axios.get(`http://127.0.0.1:8000/api/cant-empleados-brigada/${numeroBrigada}`);
           this.cantEmpleados = response.data;
+          console.log(this.cantEmpleados)
+
           this.calcularCantEmpleadosRestantes()
         }
       } catch (error) {
@@ -393,7 +393,7 @@ export default {
           let vitolaEncontrada = this.arrayVitolas.find(vitola => vitola.nombre === element.vitola);
           console.log(this.arrayBrigadas)
           vitola_id = vitolaEncontrada.id
-          let brigadaEncontrada = this.arrayBrigadas.find(brigada => brigada.numero.toString() === element.brigada)
+          let brigadaEncontrada = this.arrayBrigadas.find(brigada => brigada.numero.toString() == element.brigada)
           console.log(brigadaEncontrada)
           brigada_id = brigadaEncontrada.id
 

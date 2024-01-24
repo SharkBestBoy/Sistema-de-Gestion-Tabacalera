@@ -49,16 +49,36 @@ class ProduccionController extends Controller
         }
     }
 
-    public function produccionesPorFecha(Request $request, $anno, $mes, $dia)
+    public function produccionesPorFecha($dia, $mes, $anno)
     {
         $fecha = Fecha::where('anno', $anno)
             ->where('mes', $mes)
             ->where('dia', $dia)
             ->firstOrFail(); // Obtener la fecha correspondiente
 
-        $producciones = Produccion::where('fecha_id', $fecha->id)->get(); // Obtener las producciones de esa fecha
+        $producciones = Produccion::where('fecha_id', $fecha->id)
+            ->with(['vitola', 'brigada']) // Cargar relaciones
+            ->get(); // Obtener las producciones de esa fecha con las relaciones cargadas
 
-        return response()->json(['producciones' => $producciones]);
+        // Transformar los resultados para incluir nombres y números en lugar de IDs
+        $produccionesTransformadas = $producciones->map(function ($produccion) {
+            return [
+                'id' => $produccion->id,
+                'cant_producida' => $produccion->cant_producida,
+                'cant_trabajadores' => $produccion->cant_trabajadores,
+                'vitola' => [
+                    'nombre' => $produccion->vitola->nombre,
+                    'categoria' => $produccion->vitola->categoria,
+                ],
+                'brigada' => [
+                    'numero' => $produccion->brigada->numero,
+                ],
+                'created_at' => $produccion->created_at,
+                'updated_at' => $produccion->updated_at,
+            ];
+        });
+
+        return response()->json(['producciones' => $produccionesTransformadas]);
     }
 
 
@@ -76,7 +96,7 @@ class ProduccionController extends Controller
         $producciones = Produccion::where('fecha_id', $fecha_id)->get();
 
         // Calcular la suma de la cantidad de producciones
-        $sumaProduccion = $producciones->sum('cantidad');
+        $sumaProduccion = $producciones->sum('cant_producida');
 
         return response()->json(['suma_produccion' => $sumaProduccion]);
     }
@@ -86,37 +106,63 @@ class ProduccionController extends Controller
         // Obtener la producción diaria
         $sumaProduccionDiaria = $this->sumaProduccionPorDia($fechaId);
 
-        $data = json_decode($sumaProduccionDiaria->content(),true);
+        $data = json_decode($sumaProduccionDiaria->content(), true);
         $produccionDiaria = $data['suma_produccion'];
+        // Obtener la planificación id a partir de la fecha
+        $fecha = Fecha::find($fechaId);
 
-          // Obtener la planificación id a partir de la fecha
-    $fecha = Fecha::find($fechaId);
-    
-    if (!$fecha) {
-        return response()->json(['error' => 'Fecha no encontrada'], 404);
-    }
+        if (!$fecha) {
+            return response()->json(['error' => 'Fecha no encontrada'], 404);
+        }
 
-    $planificacionId = $fecha->planificacion_id;
-
-    // Verificar si la planificación id es válida
-    if (!$planificacionId) {
-        return response()->json(['error' => 'La fecha no tiene una planificación asociada'], 404);
-    }
+        $planificacionId = $fecha->planificacion_id;
+        // Verificar si la planificación id es válida
+        if (!$planificacionId) {
+            return response()->json(['error' => 'La fecha no tiene una planificación asociada'], 404);
+        }
 
         // ARREGLAR ESTO QUE ME ESTA LLAMANDO AL METODO CALCULARPLANIFICACIONDIARIA CON FECHAID Y NO CON PLANIFICACIONID
         // Obtener la planificación diaria
 
         $planificacionController = app(PlanificacionController::class);
         $planificacionDiaria = $planificacionController->calcularPlanificacionDiaria($planificacionId);
-        $planificacionDiaria= json_decode($planificacionDiaria->content())->planificacionDiaria;
-         
+
         // Calcular el porcentaje de cumplimiento
         $porcentajeCumplimiento = 0;
         if ($planificacionDiaria > 0) {
             $porcentajeCumplimiento = ($produccionDiaria / $planificacionDiaria) * 100;
         }
 
-        return response()->json(['porcentajeCumplimiento' => $porcentajeCumplimiento]);
+        return number_format($porcentajeCumplimiento, 2);
+    }
+
+    public function obtenerInformacionMensual($mes, $anno)
+    {
+        try {
+            // Obtener todos los días del mes y año que tienen producciones
+            $fechasConProduccion = Produccion::join('fechas', 'produccions.fecha_id', '=', 'fechas.id')
+                ->where('fechas.mes', $mes)
+                ->where('fechas.anno', $anno)
+                ->get();
+            // Inicializar arrays para almacenar resultados
+            $resultados = [];
+            foreach ($fechasConProduccion as $produccion) {
+                $fechaId = $produccion->fecha_id;
+                // Sumar las cantidades producidas y la cantidad de trabajadores por fecha_id
+                $resultados[$fechaId]['dia'] = $produccion->dia; // Agregar la clave "dia"
+                $resultados[$fechaId]['cant_producida'] = ($resultados[$fechaId]['cant_producida'] ?? 0) + $produccion->cant_producida;
+                $resultados[$fechaId]['cant_trabajadores'] = ($resultados[$fechaId]['cant_trabajadores'] ?? 0) + $produccion->cant_trabajadores;
+
+                // Calcular el porcentaje de cumplimiento por fecha_id
+                $porcentajeCumplimiento = $this->calcularPorcentajeCumplimiento($fechaId);
+                $resultados[$fechaId]['porcentaje_cumplimiento'] = $porcentajeCumplimiento;
+            }
+            $planificacionController = app(PlanificacionController::class);
+            $planDiario = $planificacionController->calcularPlanificacionDiaria($produccion->planificacion_id);
+
+            return response()->json(['dias' => $resultados, 'planDiario' => $planDiario]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e], 500);
+        }
     }
 }
-

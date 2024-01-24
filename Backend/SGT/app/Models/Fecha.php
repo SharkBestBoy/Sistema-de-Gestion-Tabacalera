@@ -12,4 +12,9 @@ class Fecha extends Model
     {
         return $this->belongsTo(Planificacion::class, 'planificacion_id');
     }
+
+    public function producciones()
+    {
+        return $this->hasMany(Produccion::class, 'fecha_id');
+    }
 }

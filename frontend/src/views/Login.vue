@@ -1,13 +1,10 @@
 <template>
   <v-container>
     <v-row justify="center" class="mt-16">
-      <v-col  sm="8" md="5">
+      <v-col sm="8" md="5">
         <v-card class="elevation-12 rounded-xl">
           <v-container align="center" class="pb-0">
-            <v-img src="../images/logo.jpg"
-            class="rounded-circle"           
-             width="110"
-            ></v-img>
+            <v-img src="../images/logo.jpg" class="rounded-circle" width="110"></v-img>
           </v-container>
           <v-card-title align="center" class="text-h5">
             <v-icon class="mr-2">mdi-account</v-icon>
@@ -17,23 +14,17 @@
             <v-form @submit.prevent="login">
               <v-row>
                 <v-col cols="12">
-                  <v-text-field v-model="username" label="Usuario" prepend-icon="mdi-account" required></v-text-field>
+                  <v-text-field v-model="email" label="Correo" prepend-icon="mdi-account" required></v-text-field>
                 </v-col>
                 <v-col cols="12">
-                  <v-text-field v-model="password" 
-                  @click:append="cambiarVisibilidadPass"
-                  :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                    :type="showPassword ? 'text' : 'password'" 
-                    label="Contraseña"
-                    prepend-icon="mdi-lock"
-                    required></v-text-field>
+                  <v-text-field v-model="password" @click:append="cambiarVisibilidadPass"
+                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="showPassword ? 'text' : 'password'"
+                    label="Contraseña" prepend-icon="mdi-lock" required></v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-row justify="center">
                     <v-col cols="8">
-                      <v-btn type="submit" color="primary"
-                      append-icon="mdi-login" 
-                      block>Iniciar sesión</v-btn>
+                      <v-btn type="submit" color="primary" append-icon="mdi-login" block>Iniciar sesión</v-btn>
                     </v-col>
                   </v-row>
                 </v-col>
@@ -47,6 +38,9 @@
 </template>
 
 <script>
+import axios from 'axios';
+import authService from '../services/authService';
+
 export default {
   mounted() {
     // Emitir evento para indicar que no se debe mostrar el NavBar
@@ -54,16 +48,33 @@ export default {
   },
   data() {
     return {
-      username: '',
+      email: '',
       password: '',
       showPassword: false
     };
   },
   methods: {
-    login() {
-      console.log('Intento de inicio de sesión:', this.username, this.password);
+    async login() {
+      try {
+        const success = await authService.login(this.email, this.password);
+
+        // Verificar si la respuesta es exitosa
+        if (success) {
+        // Redirigir a la página después de iniciar sesión (por ejemplo, la página de inicio)
+        this.$router.push('/p');
+        } else {
+          // Mostrar mensaje de error si la respuesta no es exitosa
+          console.error("Error en la respuesta del servidor");
+        }
+      } catch (error) {
+        // Mostrar mensaje de error si hay un error en la petición
+        console.error("Error en la petición:", error);
+
+        // Puedes mostrar un mensaje específico si las credenciales son incorrectas
+        console.log("Credenciales incorrectas");
+      }
     },
-    
+
     cambiarVisibilidadPass() {
       this.showPassword = !this.showPassword;
     }

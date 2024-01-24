@@ -236,7 +236,7 @@ export default {
             try {
                 console.log(this.selectedBrigada)
              
-                if (this.selectedBrigada == undefined) {
+                if (this.selectedBrigada === undefined || this.selectedBrigada==='') {
                     this.snackbar = true
                     this.mensaje = 'Debe seleccionar una brigada'
                 } else {
@@ -249,6 +249,9 @@ export default {
                         const response = await axios.post(`http://127.0.0.1:8000/api/empleados/brigada_${brigada_id}/empleado_${empleado_id}`)
                         this.obtenerEmpleadosSinBrigada()
                         this.obtenerEmpleadosBrigada()
+                        this.empleadoSinBrigadaSelected=null
+                        this.empleadoConBrigadaSelected=null
+
                     }
                 }
             } catch (error) {
@@ -265,6 +268,9 @@ export default {
                     const response = await axios.post(`http://127.0.0.1:8000/api/empleados/empleado_${empleado_id}`)
                     this.obtenerEmpleadosSinBrigada()
                     this.obtenerEmpleadosBrigada()
+                    this.empleadoConBrigadaSelected=null
+                    this.empleadoSinBrigadaSelected=null
+
                 }
 
             } catch (error) {
@@ -273,12 +279,11 @@ export default {
         },
 
         onEmpleadoSinBrigadaSelected(item) {
-
-            if (item) {
                 console.log('Empleado seleccionado:', item.id);
-                this.empleadoSinBrigadaSelected = item.id
+                if(this.empleadoSinBrigadaSelected==item.id){
+                this.empleadoSinBrigadaSelected = null
             } else {
-                this.empleadoSinBrigadaSelected = ''
+                this.empleadoSinBrigadaSelected = item.id
                 console.log('Empleado seleccionado:', item);
 
             }
@@ -286,13 +291,10 @@ export default {
         },
         onEmpleadoConBrigadaSelected(item) {
 
-            if (item) {
-                console.log('Empleado seleccionado:', item.id);
-                this.empleadoConBrigadaSelected = item.id
+            if(this.empleadoConBrigadaSelected==item.id){
+                this.empleadoConBrigadaSelected = null
             } else {
-                this.empleadoConBrigadaSelected = ''
-                console.log('Empleado seleccionado:', item);
-
+                this.empleadoConBrigadaSelected = item.id
             }
 
         },
