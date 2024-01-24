@@ -117,7 +117,7 @@ class PlanificacionController extends Controller
 
         if ($planificacion) {
             // Hay una planificación para el mes y año dados
-            return response()->json(['existe' => true, 'id' => $planificacion->id, 'mensaje' => 'Hay una planificación para el mes y año dados']);
+            return response()->json(['existe' => true, 'planificacionMensual' => $planificacion->planificacionMensual, 'id' => $planificacion->id, 'mensaje' => 'Hay una planificación para el mes y año dados']);
         } else {
             // No hay una planificación para el mes y año dados
             return response()->json(['existe' => false, 'mensaje' => 'No hay una planificación para el mes y año dados']);

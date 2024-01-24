@@ -7,6 +7,12 @@ import Planificacion from '@/views/Planificacion';
 import GestionarUsuarios from '@/views/GestionarUsuarios';
 import authService from '@/services/authService';
 
+
+const notFoundRoute = {
+  path: '/:catchAll(.*)',
+  redirect: '/login',
+};
+
 const routes = [
   {
     path: '/login',
@@ -15,7 +21,7 @@ const routes = [
    
   },
     {
-    path: '/p',
+    path: '/home',
     name: 'Principal',
     component: Principal,
     meta: { requiresAuth: true }, // Esta ruta requiere autenticación
@@ -23,7 +29,7 @@ const routes = [
   },
  
   {
-    path: '/pd',
+    path: '/addProduccion',
     name: 'prodDiaria',
     component: ProdDiaria,
     meta: { requiresAuth: true }, // Esta ruta requiere autenticación
@@ -37,14 +43,14 @@ const routes = [
 
   },
   {
-    path: '/gb',
+    path: '/gestionarBrigada',
     name: 'gestionarBrigada',
     component: GestionarBrigada,
     meta: { requiresAuth: true }, // Esta ruta requiere autenticación
 
   },
   {
-    path: '/AddEmpleado',
+    path: '/gestionarEmpleados',
     name: 'AddEmpleado',
     component: function () {
       return import(/* webpackChunkName: "about" */ '../views/AddEmpleado')  
@@ -53,7 +59,7 @@ const routes = [
 
   },
   {
-    path: '/mostrar',
+    path: '/mostrarProducciones',
     name: 'mostrar',
     component: function () {
       return import(/* webpackChunkName: "about" */ '../views/Mostrar')
@@ -62,12 +68,13 @@ const routes = [
 
   },
 {
-    path: '/pl',
+    path: '/gestionarPlanificacion',
     name: 'planificacion',
     component: Planificacion,
     meta: { requiresAuth: true }, // Esta ruta requiere autenticación
 
   },
+  notFoundRoute,
 ];
 
 const router = createRouter({

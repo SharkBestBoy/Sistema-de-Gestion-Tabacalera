@@ -62,11 +62,11 @@
                 <v-card-title class="text-center pt-0 pb-0 ">
                   <h5>Mensual</h5>
                 </v-card-title>
-                <v-card-text class="text-center">6520</v-card-text>
+                <v-card-text class="text-center">{{valuePlanificacionMensual}}</v-card-text>
                 <v-card-title class="text-center pt-0 pb-0 ">
                   <h5>Diaria</h5>
                 </v-card-title>
-                <v-card-text class="text-center">200</v-card-text>
+                <v-card-text class="text-center">{{valuePlanificacionDiaria}}</v-card-text>
 
               </v-card>
             </v-col>
@@ -76,7 +76,7 @@
                 <v-card-title class="text-center">
                   <h3>Producción Total del Día</h3>
                 </v-card-title>
-                <v-card-text class="text-center">200</v-card-text>
+                <v-card-text class="text-center">{{valueProduccionTotalDia}}</v-card-text>
               </v-card>
             </v-col>
 
@@ -97,7 +97,8 @@
               <v-card v-if="toggleEscogido === 0" height="150">
                 <v-card-title class="text-center">Porcentaje de Cumplimiento del Plan Diario</v-card-title>
                 <v-card-text class="text-center">
-                  <v-progress-circular :rotate="360" :size="90" :width="15" :model-value="valuePorcentajeCumpDiario" color="success">
+                  <v-progress-circular :rotate="360" :size="90" :width="15" :model-value="valuePorcentajeCumpDiario"
+                    color="success">
                     <template v-slot:default> {{ valuePorcentajeCumpDiario }} % </template>
                   </v-progress-circular> </v-card-text>
               </v-card>
@@ -126,6 +127,9 @@ import axios from 'axios'
 
 export default {
   data: () => ({
+    valueProduccionTotalDia:0,
+    valuePlanificacionMensual:0,
+    valuePlanificacionDiaria:0,
     valuePorcentajeCumpDiario: 0,
     toggleEscogido: 1,
     value: 60,
@@ -133,6 +137,8 @@ export default {
     fecha: null,
     dialog: false,
     dialogDelete: false,
+    itemsMes: [],
+    itemsDia: [],
     headersDia: [
       {
         title: 'Vitola',
@@ -144,45 +150,27 @@ export default {
       { title: 'Cantidad de Trabajadores', key: 'cantTrabajadores', align: 'center' },
       { title: 'Cantidad', key: 'cant', align: 'center' },
     ],
-    itemsDia: [],
     headersMes: [
       {
         title: 'Día',
         key: 'dia',
-        align: 'center'
+        align: 'start'
       },
-      { title: 'Día de la semana', key: 'dia_semana', align: 'center' },
-      { title: 'Total trabajadores', key: 'tot_trabajadores', align: 'center' },
+      { title: 'Día de la semana', key: 'dia_semana', align: 'start' },
+      { title: 'Total trabajadores', key: 'tot_trabajadores', align: 'start' },
       {
         title: 'Análisis', align: 'center', children: [
-          { title: 'Producción total', key: 'prodTotal', align: 'center' },
-          { title: 'Plan Diario', key: 'planDiario', align: 'center' },
+          { title: 'Producción total', key: 'prodTotal', align: 'start' },
+          { title: 'Plan Diario', key: 'planDiario', align: 'start' },
           { title: 'Porcentaje de Cumplimiento', key: 'porcentaje', align: 'center' },
         ]
       },
     ],
-    itemsMes: [],
-    editedIndex: -1,
-    editedItem: {
-      name: '',
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
-    },
-    defaultItem: {
-      name: '',
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
-    },
+
   }),
 
   computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
-    },
+
   },
 
   watch: {
@@ -205,14 +193,14 @@ export default {
           numBrigada: produccion.brigada.numero
         };
       })
+      this.calcularProduccionTotalDia()
+
 
     },
     async initializeMes() {
       try {
 
         const response = await axios.get(`http://127.0.0.1:8000/api/produccions/mes=${this.fecha.getMonth() + 1}/anno=${this.fecha.getFullYear()}`);
-
-        console.log(response.data);
 
         this.itemsMes = Object.keys(response.data.dias).map(key => {
           const diaInfo = response.data.dias[key];
@@ -228,7 +216,7 @@ export default {
             tot_trabajadores: diaInfo.cant_trabajadores,
             prodTotal: diaInfo.cant_producida,
             planDiario: response.data.planDiario,
-            porcentaje: diaInfo.porcentaje_cumplimiento,
+            porcentaje: `${diaInfo.porcentaje_cumplimiento} %`,
           };
         });
       } catch (error) {
@@ -237,10 +225,12 @@ export default {
     },
     async selected() {
       try {
+
         const fecha = new Date(`${this.fechaSelected}T00:00:00`)
         this.fecha = fecha
         this.initializeDia()
         this.initializeMes()
+        this.obtenerPlanificacionMensual()
         const responsefecha = await axios.get(`http://127.0.0.1:8000/api/fechas/dia=${fecha.getDate()}/mes=${fecha.getMonth() + 1}/anno=${fecha.getFullYear()}`);
         const response = await axios.get(`http://127.0.0.1:8000/api/produccions/porcentajeDiario/${responsefecha.data.fecha_id}`);
         this.valuePorcentajeCumpDiario = response.data
@@ -248,48 +238,27 @@ export default {
         console.error(error)
       }
     },
-
-    editItem(item) {
-      this.editedIndex = this.itemsDia.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialog = true
-    },
-
-    deleteItem(item) {
-      this.editedIndex = this.itemsDia.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialogDelete = true
-    },
-
-    deleteItemConfirm() {
-      this.itemsDia.splice(this.editedIndex, 1)
-      this.closeDelete()
-    },
-
-    close() {
-      this.dialog = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
-
-    closeDelete() {
-      this.dialogDelete = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
-
-    save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.itemsDia[this.editedIndex], this.editedItem)
-      } else {
-        this.itemsDia.push(this.editedItem)
+    async obtenerPlanificacionMensual() {
+      try {        
+        const responseMensual = await axios.get(`http://127.0.0.1:8000/api/planificacions/mes=${this.fecha.getMonth() + 1}/anno=${this.fecha.getFullYear()}`);
+        const responseDiaria = await axios.get(`http://127.0.0.1:8000/api/planificacions/${responseMensual.data.id}`);
+        this.valuePlanificacionMensual = responseMensual.data.planificacionMensual
+        this.valuePlanificacionDiaria = responseDiaria.data
+      } catch (error) {
+        console.error(error)
       }
-      this.close()
     },
+
+    calcularProduccionTotalDia(){
+        let cantidadTotal=0
+        this.itemsDia.forEach(element => {
+          cantidadTotal+=element.cant
+        });
+        console.log(cantidadTotal)
+
+        this.valueProduccionTotalDia=cantidadTotal
+    }
+
   },
 
 }

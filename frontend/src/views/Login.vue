@@ -11,20 +11,25 @@
             Inicio de sesión
           </v-card-title>
           <v-card-text>
-            <v-form @submit.prevent="login">
+            <v-form v-model="form" @submit.prevent="login">
               <v-row>
                 <v-col cols="12">
-                  <v-text-field v-model="email" label="Correo" prepend-icon="mdi-account" required></v-text-field>
+                  <v-text-field :rules="[rules.required]" v-model="email" label="Correo" prepend-icon="mdi-email"
+                    required></v-text-field>
                 </v-col>
                 <v-col cols="12">
-                  <v-text-field v-model="password" @click:append="cambiarVisibilidadPass"
+                  <v-text-field :rules="[rules.required]" v-model="password" @click:append="cambiarVisibilidadPass"
                     :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="showPassword ? 'text' : 'password'"
                     label="Contraseña" prepend-icon="mdi-lock" required></v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-row justify="center">
+                    <span v-if="credencialesIncorrectas" class="error-message">Credenciales incorrectas</span>
+                  </v-row>
+                  <v-row justify="center">
                     <v-col cols="8">
-                      <v-btn type="submit" color="primary" append-icon="mdi-login" block>Iniciar sesión</v-btn>
+                      <v-btn :disabled="!form" type="submit" color="primary" append-icon="mdi-login" block>Iniciar
+                        sesión</v-btn>
                     </v-col>
                   </v-row>
                 </v-col>
@@ -48,9 +53,14 @@ export default {
   },
   data() {
     return {
+      credencialesIncorrectas: false,
+      form: false,
       email: '',
       password: '',
-      showPassword: false
+      showPassword: false,
+      rules: {
+        required: value => !!value || 'Complete el campo de texto',
+      },
     };
   },
   methods: {
@@ -60,11 +70,13 @@ export default {
 
         // Verificar si la respuesta es exitosa
         if (success) {
-        // Redirigir a la página después de iniciar sesión (por ejemplo, la página de inicio)
-        this.$router.push('/p');
+          // Redirigir a la página después de iniciar sesión (por ejemplo, la página de inicio)
+          this.$router.push('/home');
         } else {
           // Mostrar mensaje de error si la respuesta no es exitosa
           console.error("Error en la respuesta del servidor");
+          this.credencialesIncorrectas = true;
+
         }
       } catch (error) {
         // Mostrar mensaje de error si hay un error en la petición
@@ -83,7 +95,7 @@ export default {
 </script>
 
 <style scoped>
-.fill-height {
-  height: 100vh;
+.error-message {
+  color: red;
 }
 </style>
