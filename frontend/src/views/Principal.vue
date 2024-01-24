@@ -1,119 +1,111 @@
 <template>
-    <div class="d-flex align-center flex-column">
-        <div class="brown-text title">Tabacos</div>
-        <v-card class="elevation-12" width="400">
-            <v-card-text>
-                <v-row>
-                    <v-col cols="12">
-                        <div class="info-row">
-                            <span class="info-label">Producción Total de Tabacos:</span>
-                            <span class="info-value">53,350</span>
-                        </div>
-                    </v-col>
-                    <v-col cols="12">
-                        <div class="info-row">
-                            <span class="info-label">Cantidad producida por la B1:</span>
-                            <span class="info-value">38,200</span>
-                        </div>
-                    </v-col>
-                    <v-col cols="12">
-                        <div class="info-row">
-                            <span class="info-label">Cantidad producida por la B2:</span>
-                            <span class="info-value">15,150</span>
-                        </div>
-                    </v-col>
-                </v-row>
-            </v-card-text>
-        </v-card>
+    <v-container>
+        <v-row justify="center">
+            <v-col cols="6" align="center">
+                <h1>{{ dia }} de {{mes}} del {{anno}}</h1>
+            </v-col>
 
-        <div class="mt-4 brown-text title">Brigadas</div>
-        <v-card class="elevation-12" width="400">
-            <v-card-text>
-                <v-row>
-                    <v-col cols="12">
-                        <div class="info-row">
-                            <span class="info-label">Cantidad de brigadas:</span>
-                            <span class="info-value">2</span>
-                        </div>
-                    </v-col>
-                    <v-col cols="12">
-                        <div class="info-row">
-                            <span class="info-label">Cantidad de trabajadores:</span>
-                            <span class="info-value">62</span>
-                        </div>
-                    </v-col>
-                </v-row>
-            </v-card-text>
-        </v-card>
-        
-        <div class="mt-4 brown-text title" >Planificación</div>
-        <v-card class="elevation-12" width="400">
-            <v-card-text>
-                <v-row>
-                    <v-col cols="12">
-                        <div class="info-row">
-                            <span class="info-label">Planificación del mes:</span>
-                            <span class="info-value">15,000</span>
-                        </div>
-                    </v-col>
-                    <v-col cols="12">
-                        <div class="info-row">
-                            <span class="info-label">Planificación diaria:</span>
-                            <span class="info-value">535</span>
-                        </div>
-                    </v-col>
-                    <v-col cols="12">
-                        <div class="info-row">
-                            <span class="info-label">Planificación cumplida:</span>
-                            <span class="info-value">27%</span>
-                        </div>
-                    </v-col>
-                </v-row>
-            </v-card-text>
-        </v-card>
-    </div>
+        </v-row>
+        <v-row justify="center">
+            <v-col cols="3">
+                <v-card elevation="5" align="center">
+                    <v-card-title>
+                        <h2>Resumen de Brigadas</h2>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12">
+                                <p>Cantidad de Brigadas: {{ cantidadBrigadas }}</p>
+                                <p>Cantidad de Empleados: {{ cantidadBrigadas }}</p>
+                                <p>Cantidad de Empleados sin Brigada: {{ cantidadBrigadas }}</p>
+                                <!-- Otros datos resumen sobre brigadas -->
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+            </v-col>
+            <v-col cols="3">
+                <v-card elevation="5" align="center">
+                    <v-card-title>
+                        <h2>Resumen de Vitolas</h2>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12">
+                                <p>Cantidad de Vitolas: {{ cantidadVitolas }}</p>
+                                <p>Cantidad de tabacos de categoría IX: {{ cantidadVitolas }}</p>
+                                <p>Cantidad de tabacos de categoría VIII: {{ cantidadVitolas }}</p>
+                                <p>Cantidad de tabacos de categoría VII: {{ cantidadVitolas }}</p>
+                                <!-- Otros datos resumen sobre vitolas -->
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+            </v-col>
+            <v-col cols="3">
+                <v-card elevation="5" align="center">
+                    <v-card-title>
+                        <h2>Resumen de Producción</h2>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12">
+                                <p>Total producido: {{ cantidadVitolas }}</p>
+                                <p>Total producido en el mes: {{ cantidadVitolas }}</p>
+                                <p>Cumplimiento del Plan Mensual: {{ cantidadVitolas }}%</p>
+                                <!-- Otros datos resumen sobre vitolas -->
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+            </v-col> </v-row>
+    </v-container>
 </template>
   
-
 <script>
+export default {
+    data() {
+        return {
+            meses: ['Enero', 'Febrero', 'Marzo',
+                'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre',
+                'octubre', 'Noviembre', 'Diciembre'],
+            dia: null,
+            mes: null,
+            anno: null,
+            cantidadBrigadas: 0, // Obtén esta información desde tu API o vuex store
+            cantidadVitolas: 0, // Obtén esta información desde tu API o vuex store
+            // Otros datos resumen
+        };
+    },
+    // Puedes utilizar created o mounted para cargar los datos al iniciar la página
+    created() {
+        this.obtenerDatosResumen();
+    },
+    methods: {
+        async obtenerDatosResumen() {
+            const fechaActual = new Date();
+            this.dia = fechaActual.getDate()
+            this.anno = fechaActual.getFullYear();
+            const mesActual = parseInt(fechaActual.getMonth()); // Sumar 1 para obtener un número entre 1 y 12
+            this.mes = this.meses[mesActual]
 
-import NavBar from '@/components/NavBar.vue'; 
-export default{
-    components:{
-        NavBar,
-    }
-}
+            // Realiza las llamadas a tu API o vuex store para obtener los datos resumen
+            // Actualiza los valores de cantidadBrigadas, cantidadVitolas, etc.
+            // Ejemplo ficticio con axios:
+            try {
+                const responseBrigadas = await axios.get('http://tu-api.com/obtener-cantidad-brigadas');
+                this.cantidadBrigadas = responseBrigadas.data.cantidad;
 
+                const responseVitolas = await axios.get('http://tu-api.com/obtener-cantidad-vitolas');
+                this.cantidadVitolas = responseVitolas.data.cantidad;
+
+                // Actualiza otros datos resumen
+            } catch (error) {
+                console.error('Error al obtener datos resumen:', error);
+            }
+        },
+    },
+};
 </script>
-
-
-
-<style scoped>
-.brown-text {
-    color: brown;
-    font-weight: bold;
-    font-size: 18px;
-    /* Puedes ajustar el tamaño según tus necesidades */
-}
-
-.title {
-    font-size: 24px;
-    /* Puedes ajustar el tamaño según tus necesidades */
-}
-
-.info-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-}
-
-.info-label {
-    color: rgba(165, 42, 42, 0.829);
-    font-style: italic;
-}
-
-.info-value {
-    font-weight: bold;
-}
-</style>
   

@@ -85,7 +85,7 @@
                 <v-card-title class="text-center">
                   <h3>Producción hasta la fecha</h3>
                 </v-card-title>
-                <v-card-text class="text-center">871</v-card-text>
+                <v-card-text class="text-center">{{valueProduccionTotal}}</v-card-text>
               </v-card>
             </v-col>
           </v-row>
@@ -95,7 +95,7 @@
           <v-row>
             <v-col cols="6">
               <v-card v-if="toggleEscogido === 0" height="150">
-                <v-card-title class="text-center">Porcentaje de Cumplimiento del Plan Diario</v-card-title>
+                <v-card-title class="text-center">Cumplimiento del Plan Diario</v-card-title>
                 <v-card-text class="text-center">
                   <v-progress-circular :rotate="360" :size="90" :width="15" :model-value="valuePorcentajeCumpDiario"
                     color="success">
@@ -106,7 +106,7 @@
 
             <v-col cols="6">
               <v-card height="150">
-                <v-card-title class="text-center">Porcentaje de Cumplimiento del Plan Mensual</v-card-title>
+                <v-card-title class="text-center">Cumplimiento del Plan Mensual</v-card-title>
                 <v-card-text class="text-center">
                   <v-progress-circular :rotate="360" :size="90" :width="15" :model-value="value" color="success">
                     <template v-slot:default> {{ value }} % </template>
@@ -127,6 +127,7 @@ import axios from 'axios'
 
 export default {
   data: () => ({
+    valueProduccionTotal:0,
     valueProduccionTotalDia:0,
     valuePlanificacionMensual:0,
     valuePlanificacionDiaria:0,
