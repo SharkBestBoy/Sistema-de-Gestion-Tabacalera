@@ -55,6 +55,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('produccions/porcentajeDiario/{fechaID}', [ProduccionController::class, 'calcularPorcentajeCumplimiento']);
     Route::get('produccions/dia={dia}/mes={mes}/anno={anno}', [ProduccionController::class, 'produccionesPorFecha']);
     Route::get('produccions/mes={mes}/anno={anno}', [ProduccionController::class, 'obtenerInformacionMensual']);
+    Route::get('produccionsTotalMes/mes={mes}/anno={anno}', [ProduccionController::class, 'produccionTotalMes']);
+    Route::get('produccions_IX', [ProduccionController::class, 'sumaProduccionVitolaIX']);
+    Route::get('produccions_VIII', [ProduccionController::class, 'sumaProduccionVitolaVIII']);
+    Route::get('produccions_VII', [ProduccionController::class, 'sumaProduccionVitolaVII']);
 
     Route::get('vitolas', [VitolaController::class, 'index']);
     Route::post('vitolas', [VitolaController::class, 'store']);

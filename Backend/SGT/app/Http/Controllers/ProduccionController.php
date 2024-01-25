@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Brigada;
 use App\Models\Fecha;
 use App\Models\Produccion;
+use App\Models\Vitola;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -164,5 +165,95 @@ class ProduccionController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => $e], 500);
         }
+    }
+    public function produccionTotalMes($mes, $anno)
+    {
+
+        // Obtener las fechas en el mes y año especificados
+        $fechas = Fecha::where('mes', $mes)
+            ->where('anno', $anno)
+            ->get();
+
+        // Inicializar la suma total
+        $sumaTotal = 0;
+
+        // Iterar sobre las fechas y sumar las producciones
+        foreach ($fechas as $fecha) {
+            $fecha_id = $fecha->id;
+
+            // Obtener las producciones asociadas a la fecha
+            $producciones = Produccion::where('fecha_id', $fecha_id)->get();
+
+            // Calcular la suma de la cantidad de producciones
+            $sumaProduccion = $producciones->sum('cant_producida');
+
+            // Sumar al total
+            $sumaTotal += $sumaProduccion;
+        }
+
+        return response()->json(['suma_produccion_mes' => $sumaTotal]);
+    }
+
+    public function sumaProduccionVitolaIX()
+    {
+        // Obtener la ID de la vitola con categoría IX
+        $vitolaIds = Vitola::where('categoria', 'IX')->pluck('id');
+
+        // Verificar si se encontraron vitolas con categoría IX
+        if ($vitolaIds->isEmpty()) {
+            return response()->json(['error' => 'Vitolas con categoría IX no encontradas'], 404);
+        }
+
+        // Obtener las producciones asociadas a las vitolas con categoría IX
+        $producciones = Produccion::whereIn('vitola_id', $vitolaIds)->get();
+
+        // Calcular la suma de la cantidad de producciones
+        $sumaProduccion = $producciones->sum('cant_producida');
+
+        return response()->json(['suma_produccion_vitola_ix' => $sumaProduccion]);
+    }
+
+
+    public function sumaProduccionVitolaVIII()
+    {
+        try {
+            // Obtener la ID de la vitola con categoría IX
+            $vitolaIds = Vitola::where('categoria', 'VIII')->pluck('id');
+
+            // Verificar si la vitola con categoría IX existe
+            if ($vitolaIds->isEmpty()) {
+                return response()->json(['error' => 'Vitola con categoría VIII no encontrada'], 404);
+            }
+            // Obtener las producciones asociadas a la vitola con categoría IX
+            
+            $producciones = Produccion::whereIn('vitola_id', $vitolaIds)->get();
+            // if ($producciones) {
+            //     return response()->json(['error' => 'No Existen producciones con categoria VIII', 'suma_produccion_vitola_vii' => 0], 404);
+            // }
+            // Calcular la suma de la cantidad de producciones
+            $sumaProduccion = $producciones->sum('cant_producida');
+
+            return response()->json(['suma_produccion_vitola_viii' => $sumaProduccion]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e], 500);
+        }
+    }
+    public function sumaProduccionVitolaVII()
+    {
+        // Obtener la ID de la vitola con categoría IX
+        $vitolaIds = Vitola::where('categoria', 'VII')->pluck('id');
+
+        // Verificar si la vitola con categoría IX existe
+        if ($vitolaIds->isEmpty()) {
+            return response()->json(['error' => 'Vitola con categoría VII no encontrada'], 404);
+        }
+
+        // Obtener las producciones asociadas a la vitola con categoría IX
+        $producciones = Produccion::whereIn('vitola_id', $vitolaIds)->get();
+        
+        // Calcular la suma de la cantidad de producciones
+        $sumaProduccion = $producciones->sum('cant_producida');
+
+        return response()->json(['suma_produccion_vitola_vii' => $sumaProduccion]);
     }
 }

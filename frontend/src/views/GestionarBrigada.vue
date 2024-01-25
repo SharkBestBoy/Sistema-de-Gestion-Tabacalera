@@ -10,9 +10,12 @@
                         </v-btn>
 
                     </v-btn-toggle>
-                    <v-btn :disabled="!isEnable" @click="eliminarBrigada" color="red">
-                        <v-icon> mdi-delete </v-icon>
-                    </v-btn>
+                    <v-container>
+
+                        <v-btn :disabled="!isEnable" @click="eliminarBrigada" color="red">
+                            <v-icon> mdi-delete </v-icon>
+                        </v-btn>
+                    </v-container>
                 </v-container>
 
                 <v-spacer></v-spacer>
@@ -32,7 +35,8 @@
                         </v-card-subtitle>
                     </v-card-title>
                     <v-divider :thickness="8" class="border-opacity-50" color="brown"></v-divider>
-                    <v-list v-model="empleadoConBrigadaSelected" @click:select="onEmpleadoConBrigadaSelected" color="brown" :items="empleadosBrigada" item-title="datos" item-value="id"></v-list>
+                    <v-list v-model="empleadoConBrigadaSelected" @click:select="onEmpleadoConBrigadaSelected" color="brown"
+                        :items="empleadosBrigada" item-title="datos" item-value="id"></v-list>
                 </v-card>
             </v-col>
 
@@ -47,10 +51,6 @@
                 <v-btn color="green" @click="desAsignarBrigada" class="mb-2">
                     <v-icon>mdi-chevron-right</v-icon>
                 </v-btn>
-                <v-spacer></v-spacer>
-                <v-btn @click="aceptar" color="green" class="mx-auto">
-                    Aceptar
-                </v-btn>
 
             </v-col>
 
@@ -60,11 +60,6 @@
                     <v-list v-model="empleadoSinBrigadaSelected" @click:select="onEmpleadoSinBrigadaSelected" color="brown"
                         :items="empleadosSinBrigada" item-title="datos" item-value="id"></v-list>
 
-                    <!-- <v-list-item  color="brown" v-for="empleado in empleadosSinBrigada" :key="empleado.id"
-                        @click="btnAsignarEnable=true">
-                         @click="selected(empleado)"> -->
-                    <!-- <v-list-item-title>{{ empleado.datos }}</v-list-item-title>
-                        </v-list-item> -->
                 </v-card>
             </v-col>
         </v-row>
@@ -195,7 +190,7 @@ export default {
                 this.obtenerEmpleadosBrigada()
             } else {
                 this.subtitleText = ''
-                this.empleadosBrigada= []
+                this.empleadosBrigada = []
 
             }
 
@@ -235,8 +230,8 @@ export default {
         async asignarBrigada() {
             try {
                 console.log(this.selectedBrigada)
-             
-                if (this.selectedBrigada === undefined || this.selectedBrigada==='') {
+
+                if (this.selectedBrigada === undefined || this.selectedBrigada === '') {
                     this.snackbar = true
                     this.mensaje = 'Debe seleccionar una brigada'
                 } else {
@@ -249,8 +244,8 @@ export default {
                         const response = await axios.post(`http://127.0.0.1:8000/api/empleados/brigada_${brigada_id}/empleado_${empleado_id}`)
                         this.obtenerEmpleadosSinBrigada()
                         this.obtenerEmpleadosBrigada()
-                        this.empleadoSinBrigadaSelected=null
-                        this.empleadoConBrigadaSelected=null
+                        this.empleadoSinBrigadaSelected = null
+                        this.empleadoConBrigadaSelected = null
 
                     }
                 }
@@ -268,8 +263,8 @@ export default {
                     const response = await axios.post(`http://127.0.0.1:8000/api/empleados/empleado_${empleado_id}`)
                     this.obtenerEmpleadosSinBrigada()
                     this.obtenerEmpleadosBrigada()
-                    this.empleadoConBrigadaSelected=null
-                    this.empleadoSinBrigadaSelected=null
+                    this.empleadoConBrigadaSelected = null
+                    this.empleadoSinBrigadaSelected = null
 
                 }
 
@@ -279,8 +274,8 @@ export default {
         },
 
         onEmpleadoSinBrigadaSelected(item) {
-                console.log('Empleado seleccionado:', item.id);
-                if(this.empleadoSinBrigadaSelected==item.id){
+            console.log('Empleado seleccionado:', item.id);
+            if (this.empleadoSinBrigadaSelected == item.id) {
                 this.empleadoSinBrigadaSelected = null
             } else {
                 this.empleadoSinBrigadaSelected = item.id
@@ -291,7 +286,7 @@ export default {
         },
         onEmpleadoConBrigadaSelected(item) {
 
-            if(this.empleadoConBrigadaSelected==item.id){
+            if (this.empleadoConBrigadaSelected == item.id) {
                 this.empleadoConBrigadaSelected = null
             } else {
                 this.empleadoConBrigadaSelected = item.id

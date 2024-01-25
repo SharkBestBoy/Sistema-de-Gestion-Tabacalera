@@ -28,16 +28,16 @@
       </v-container>
       <v-data-table v-if="toggleEscogido === 0" :headers="headersDia" :items="itemsDia">
         <template v-slot:no-data>
-          <v-btn color="primary">
-            Reset
+          <v-btn color="brown">
+            Seleccione una Fecha
           </v-btn>
         </template>
       </v-data-table>
 
       <v-data-table v-else :headers="headersMes" :items="itemsMes" :sort-by="[{ key: 'calories', order: 'asc' }]">
         <template v-slot:no-data>
-          <v-btn color="primary">
-            Reset
+          <v-btn color="brown">
+            Seleccione una Fecha
           </v-btn>
         </template>
       </v-data-table>
@@ -55,46 +55,46 @@
 
           <v-row>
             <v-col cols="4">
-              <v-card>
+              <v-card height="170">
                 <v-card-title class="text-center pb-0">
                   <h3>Planificación</h3>
                 </v-card-title>
                 <v-card-title class="text-center pt-0 pb-0 ">
                   <h5>Mensual</h5>
                 </v-card-title>
-                <v-card-text class="text-center">{{valuePlanificacionMensual}}</v-card-text>
+                <v-card-text class="text-center">{{ valuePlanificacionMensual }}</v-card-text>
                 <v-card-title class="text-center pt-0 pb-0 ">
                   <h5>Diaria</h5>
                 </v-card-title>
-                <v-card-text class="text-center">{{valuePlanificacionDiaria}}</v-card-text>
+                <v-card-text class="text-center">{{ valuePlanificacionDiaria }}</v-card-text>
 
               </v-card>
             </v-col>
 
             <v-col cols="4">
-              <v-card height="150">
+              <v-card height="170">
                 <v-card-title class="text-center">
                   <h3>Producción Total del Día</h3>
                 </v-card-title>
-                <v-card-text class="text-center">{{valueProduccionTotalDia}}</v-card-text>
+                <v-card-text class="text-center">{{ valueProduccionTotalDia }}</v-card-text>
               </v-card>
             </v-col>
 
             <v-col cols="4">
-              <v-card height="150">
+              <v-card height="170">
                 <v-card-title class="text-center">
                   <h3>Producción hasta la fecha</h3>
                 </v-card-title>
-                <v-card-text class="text-center">{{valueProduccionTotal}}</v-card-text>
+                <v-card-text class="text-center">{{ valueProduccionTotal }}</v-card-text>
               </v-card>
             </v-col>
           </v-row>
         </v-container>
         <v-container>
 
-          <v-row>
-            <v-col cols="6">
-              <v-card v-if="toggleEscogido === 0" height="150">
+          <v-row justify="center">
+            <v-col v-if="toggleEscogido === 0" cols="6">
+              <v-card height="150">
                 <v-card-title class="text-center">Cumplimiento del Plan Diario</v-card-title>
                 <v-card-text class="text-center">
                   <v-progress-circular :rotate="360" :size="90" :width="15" :model-value="valuePorcentajeCumpDiario"
@@ -104,12 +104,12 @@
               </v-card>
             </v-col>
 
-            <v-col cols="6">
+            <v-col v-else cols="6">
               <v-card height="150">
                 <v-card-title class="text-center">Cumplimiento del Plan Mensual</v-card-title>
                 <v-card-text class="text-center">
-                  <v-progress-circular :rotate="360" :size="90" :width="15" :model-value="value" color="success">
-                    <template v-slot:default> {{ value }} % </template>
+                  <v-progress-circular :rotate="360" :size="90" :width="15" :model-value="valuePorcentajeCumpMensual" color="success">
+                    <template v-slot:default> {{ valuePorcentajeCumpMensual }} % </template>
                   </v-progress-circular>
                 </v-card-text>
               </v-card>
@@ -127,13 +127,13 @@ import axios from 'axios'
 
 export default {
   data: () => ({
-    valueProduccionTotal:0,
-    valueProduccionTotalDia:0,
-    valuePlanificacionMensual:0,
-    valuePlanificacionDiaria:0,
+    valueProduccionTotal: 0,
+    valueProduccionTotalDia: 0,
+    valuePlanificacionMensual: 0,
+    valuePlanificacionDiaria: 0,
     valuePorcentajeCumpDiario: 0,
+    valuePorcentajeCumpMensual: 0,
     toggleEscogido: 1,
-    value: 60,
     fechaSelected: null,
     fecha: null,
     dialog: false,
@@ -169,15 +169,6 @@ export default {
     ],
 
   }),
-
-  computed: {
-
-  },
-
-  watch: {
-
-  },
-
   created() {
   },
 
@@ -235,12 +226,17 @@ export default {
         const responsefecha = await axios.get(`http://127.0.0.1:8000/api/fechas/dia=${fecha.getDate()}/mes=${fecha.getMonth() + 1}/anno=${fecha.getFullYear()}`);
         const response = await axios.get(`http://127.0.0.1:8000/api/produccions/porcentajeDiario/${responsefecha.data.fecha_id}`);
         this.valuePorcentajeCumpDiario = response.data
+        const cantTotalMes = await axios.get(`http://127.0.0.1:8000/api/produccionsTotalMes/mes=${fecha.getMonth() + 1}/anno=${fecha.getFullYear()}`);
+        this.valueProduccionTotal = cantTotalMes.data.suma_produccion_mes
+        if (this.valuePlanificacionMensual !== 0) {
+          this.valuePorcentajeCumpMensual = ((this.valueProduccionTotal / this.valuePlanificacionMensual) * 100).toFixed(2)
+        }
       } catch (error) {
         console.error(error)
       }
     },
     async obtenerPlanificacionMensual() {
-      try {        
+      try {
         const responseMensual = await axios.get(`http://127.0.0.1:8000/api/planificacions/mes=${this.fecha.getMonth() + 1}/anno=${this.fecha.getFullYear()}`);
         const responseDiaria = await axios.get(`http://127.0.0.1:8000/api/planificacions/${responseMensual.data.id}`);
         this.valuePlanificacionMensual = responseMensual.data.planificacionMensual
@@ -250,14 +246,14 @@ export default {
       }
     },
 
-    calcularProduccionTotalDia(){
-        let cantidadTotal=0
-        this.itemsDia.forEach(element => {
-          cantidadTotal+=element.cant
-        });
-        console.log(cantidadTotal)
+    calcularProduccionTotalDia() {
+      let cantidadTotal = 0
+      this.itemsDia.forEach(element => {
+        cantidadTotal += element.cant
+      });
+      console.log(cantidadTotal)
 
-        this.valueProduccionTotalDia=cantidadTotal
+      this.valueProduccionTotalDia = cantidadTotal
     }
 
   },
