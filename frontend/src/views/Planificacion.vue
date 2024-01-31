@@ -26,7 +26,7 @@
               v-model="planificacion"></v-text-field>
 
 
-            <v-btn black color="brown" class="ml-15" type="submit">Crear Produccion</v-btn>
+            <v-btn black color="brown" class="ml-15" type="submit">Crear Producción</v-btn>
           </v-form>
         </v-card>
       </v-col>

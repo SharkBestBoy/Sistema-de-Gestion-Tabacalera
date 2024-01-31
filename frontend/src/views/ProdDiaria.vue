@@ -68,7 +68,7 @@
           </div>
           <br>
           <v-form @submit.prevent="editarProduccionA">
-            <v-autocomplete label=" Escriba la categoria" :items="['IX', 'VIII', 'VII']" v-model="Categoria"
+            <v-autocomplete label=" Escriba la categoría" :items="['IX', 'VIII', 'VII']" v-model="Categoria"
               @blur="autoCompletableNombreVitola"></v-autocomplete>
             <br>
             <v-autocomplete label="Escriba el nombre de la vitola" :items="arrayNombreVitola"
@@ -155,19 +155,12 @@
           </div>
           <v-card-text>
             <ul>
-              <li>
-                <h3>Cantidad de producciones:</h3>
-              </li>
+            
               <li>
                 <h3>Cantidad total producida en el día: {{ prodDiariaTotal }}</h3>
               </li>
-              <li>
-                <h3>Porcentaje del cumplimiento con respecto al plan mensual:</h3>
-              </li>
             </ul><br>
 
-            <v-btn black color="success">Calcular</v-btn>
-            <v-btn black color="warning" class="ml-10">Ver datos anteriores</v-btn>
           </v-card-text>
 
         </v-card>
@@ -187,7 +180,7 @@
       </template>
     </v-snackbar>
 
-    <v-btn black color="success" @click="guardarProduccion()">Agragar producciones del Dia</v-btn>
+    <v-btn black color="success" @click="guardarProduccion()">Agregar producciones del Dia</v-btn>
   </v-container>
 </template>
 <!--Aqui estan los scripts(en la seccion data estan los datos y en methods estan todos los metodos)-->

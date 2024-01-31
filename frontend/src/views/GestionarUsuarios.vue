@@ -162,6 +162,10 @@ export default {
                     this.mensaje = 'Usuario eliminado!'
                 }
             } catch (error) {
+                this.snackbar = true
+                this.mensaje = 'El usuario no se puede eliminar'
+                this.closeDelete()
+
                 console.error('Error al eliminar el usuario', error)
             }
         },

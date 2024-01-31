@@ -108,7 +108,8 @@
               <v-card height="150">
                 <v-card-title class="text-center">Cumplimiento del Plan Mensual</v-card-title>
                 <v-card-text class="text-center">
-                  <v-progress-circular :rotate="360" :size="90" :width="15" :model-value="valuePorcentajeCumpMensual" color="success">
+                  <v-progress-circular :rotate="360" :size="90" :width="15" :model-value="valuePorcentajeCumpMensual"
+                    color="success">
                     <template v-slot:default> {{ valuePorcentajeCumpMensual }} % </template>
                   </v-progress-circular>
                 </v-card-text>
@@ -174,62 +175,78 @@ export default {
 
   methods: {
     async initializeDia() {
-      const response = await axios.get(`http://127.0.0.1:8000/api/produccions/dia=${this.fecha.getDate()}/mes=${this.fecha.getMonth() + 1}/anno=${this.fecha.getFullYear()}`)
-
-      this.itemsDia = response.data.producciones.map(produccion => {
-        return {
-          nombreVitola: produccion.vitola.nombre,
-          categoria: produccion.vitola.categoria,
-          cantTrabajadores: produccion.cant_trabajadores,
-          cant: produccion.cant_producida,
-          numBrigada: produccion.brigada.numero
-        };
-      })
-      this.calcularProduccionTotalDia()
-
-
+      try {
+        this.itemsDia=[]
+        this.valuePorcentajeCumpDiario=0
+        const response = await axios.get(`http://127.0.0.1:8000/api/produccions/dia=${this.fecha.getDate()}/mes=${this.fecha.getMonth() + 1}/anno=${this.fecha.getFullYear()}`)
+        if (response.data.producciones.length != 0) {
+          this.itemsDia = response.data.producciones.map(produccion => {
+            return {
+              nombreVitola: produccion.vitola.nombre,
+              categoria: produccion.vitola.categoria,
+              cantTrabajadores: produccion.cant_trabajadores,
+              cant: produccion.cant_producida,
+              numBrigada: produccion.brigada.numero
+            };
+          })
+          this.calcularProduccionTotalDia()
+        }
+      } catch (error) {
+        console.error(error);
+      }
     },
     async initializeMes() {
       try {
-
+        this.valuePlanificacionDiaria=0
+        this.valuePlanificacionMensual=0
+        this.valueProduccionTotalDia=0
+        this.valueProduccionTotal=0
+        this.itemsMes=[]
+        this.valuePorcentajeCumpMensual=0
         const response = await axios.get(`http://127.0.0.1:8000/api/produccions/mes=${this.fecha.getMonth() + 1}/anno=${this.fecha.getFullYear()}`);
+        if (response.data.dias.length != 0) {
 
-        this.itemsMes = Object.keys(response.data.dias).map(key => {
-          const diaInfo = response.data.dias[key];
+          this.itemsMes = Object.keys(response.data.dias).map(key => {
+            const diaInfo = response.data.dias[key];
 
-          // Puedes calcular el día de la semana aquí usando el objeto Date
-          const fechaDia = new Date(this.fecha.getFullYear(), this.fecha.getMonth(), diaInfo.dia);
-          const opcionesDiaSemana = { weekday: 'long' }; // Ajusta las opciones según tus necesidades
-          const diaSemana = fechaDia.toLocaleDateString('es-ES', opcionesDiaSemana);
+            // Puedes calcular el día de la semana aquí usando el objeto Date
+            const fechaDia = new Date(this.fecha.getFullYear(), this.fecha.getMonth(), diaInfo.dia);
+            const opcionesDiaSemana = { weekday: 'long' }; // Ajusta las opciones según tus necesidades
+            const diaSemana = fechaDia.toLocaleDateString('es-ES', opcionesDiaSemana);
 
-          return {
-            dia: diaInfo.dia,
-            dia_semana: diaSemana,
-            tot_trabajadores: diaInfo.cant_trabajadores,
-            prodTotal: diaInfo.cant_producida,
-            planDiario: response.data.planDiario,
-            porcentaje: `${diaInfo.porcentaje_cumplimiento} %`,
-          };
-        });
+            return {
+              dia: diaInfo.dia,
+              dia_semana: diaSemana,
+              tot_trabajadores: diaInfo.cant_trabajadores,
+              prodTotal: diaInfo.cant_producida,
+              planDiario: response.data.planDiario,
+              porcentaje: `${diaInfo.porcentaje_cumplimiento} %`,
+            };
+          });
+        }
       } catch (error) {
         console.error(error);
       }
     },
     async selected() {
       try {
-
         const fecha = new Date(`${this.fechaSelected}T00:00:00`)
-        this.fecha = fecha
-        this.initializeDia()
-        this.initializeMes()
-        this.obtenerPlanificacionMensual()
-        const responsefecha = await axios.get(`http://127.0.0.1:8000/api/fechas/dia=${fecha.getDate()}/mes=${fecha.getMonth() + 1}/anno=${fecha.getFullYear()}`);
-        const response = await axios.get(`http://127.0.0.1:8000/api/produccions/porcentajeDiario/${responsefecha.data.fecha_id}`);
-        this.valuePorcentajeCumpDiario = response.data
-        const cantTotalMes = await axios.get(`http://127.0.0.1:8000/api/produccionsTotalMes/mes=${fecha.getMonth() + 1}/anno=${fecha.getFullYear()}`);
-        this.valueProduccionTotal = cantTotalMes.data.suma_produccion_mes
-        if (this.valuePlanificacionMensual !== 0) {
-          this.valuePorcentajeCumpMensual = ((this.valueProduccionTotal / this.valuePlanificacionMensual) * 100).toFixed(2)
+        const fechaLimite = new Date("1/1/2024")
+        if (fecha > fechaLimite) {
+
+
+          this.fecha = fecha
+          this.initializeDia()
+          this.initializeMes()
+          this.obtenerPlanificacionMensual()
+          const responsefecha = await axios.get(`http://127.0.0.1:8000/api/fechas/dia=${fecha.getDate()}/mes=${fecha.getMonth() + 1}/anno=${fecha.getFullYear()}`);
+          const response = await axios.get(`http://127.0.0.1:8000/api/produccions/porcentajeDiario/${responsefecha.data.fecha_id}`);
+          this.valuePorcentajeCumpDiario = response.data
+          const cantTotalMes = await axios.get(`http://127.0.0.1:8000/api/produccionsTotalMes/mes=${fecha.getMonth() + 1}/anno=${fecha.getFullYear()}`);
+          this.valueProduccionTotal = cantTotalMes.data.suma_produccion_mes
+          if (this.valuePlanificacionMensual !== 0) {
+            this.valuePorcentajeCumpMensual = ((this.valueProduccionTotal / this.valuePlanificacionMensual) * 100).toFixed(2)
+          }
         }
       } catch (error) {
         console.error(error)
@@ -251,8 +268,6 @@ export default {
       this.itemsDia.forEach(element => {
         cantidadTotal += element.cant
       });
-      console.log(cantidadTotal)
-
       this.valueProduccionTotalDia = cantidadTotal
     }
 

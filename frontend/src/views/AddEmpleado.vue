@@ -1,7 +1,7 @@
 <template>
-  <v-data-table :headers="headers" :items="desserts" >
-    <template v-slot:top >
-      <v-toolbar color="brown" flat class="rounded-xl" >
+  <v-data-table :headers="headers" :items="desserts">
+    <template v-slot:top>
+      <v-toolbar color="brown" flat class="rounded-xl">
         <v-toolbar-title>Lista de Empleados</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
@@ -12,7 +12,7 @@
               Nuevo Empleado
             </v-btn>
           </template>
-          <v-card >
+          <v-card>
             <v-card-title>
               <span class="text-h5">{{ formTitle }}</span>
             </v-card-title>
@@ -27,7 +27,7 @@
                     <v-text-field v-model="editedItem.apellidos" label="Apellidos del empleado"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="10" md="10">
-                    <v-text-field v-model="editedItem.ci" label="CI"></v-text-field>
+                    <v-text-field :counter="11" v-model="editedItem.ci" label="Carnet"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="10" md="10">
                     <v-text-field v-model="editedItem.direccionLocal" label="Direccion local "></v-text-field>
@@ -96,7 +96,7 @@ export default {
     mensaje: '',
     dialog: false,
     dialogDelete: false,
-    originalCi:'',
+    originalCi: '',
     headers: [
       {
         title: 'CI',
@@ -159,7 +159,7 @@ export default {
     editItem(item) {
       this.editedIndex = this.desserts.indexOf(item)
       this.editedItem = Object.assign({}, item)
-      this.originalCi=item.ci
+      this.originalCi = item.ci
       this.dialog = true
     },
 
@@ -217,9 +217,14 @@ export default {
             this.snackbar = true
             this.mensaje = 'Llena todos los campos!'
           } else {
-            await axios.post('http://127.0.0.1:8000/api/empleados', this.editedItem)
-            this.desserts.push(this.editedItem)
-            this.close()
+            if (this.editedItem.ci.length !== 11) {
+              this.snackbar = true
+              this.mensaje = 'El carnet debe tener 11 dígitos!'
+            } else {
+              await axios.post('http://127.0.0.1:8000/api/empleados', this.editedItem)
+              this.desserts.push(this.editedItem)
+              this.close()
+            }
           }
         }
       } catch (error) {
